@@ -13,26 +13,9 @@
     remove_node/2,
     random_kronecker_graph/1, random_kronecker_graph/2,
     json_format/2,
-    show_graph/1, show_graph/2
+    fwrite_graph/2,
+    fwrite_partial_graph/2
 ]).
-
-% EXAMPLES OF USE:
-% todo
-% c(graph)                   			 compile (function show_graph requires python3 with json, networkx, and matplotlib modules)
-%
-% graph:new()                			 return the empty graph
-% graph:add_node(V, G)      			 add node V to graph G
-% graph:add_nodes(L, G)      		     add all nodes of list L to graph G
-%
-% graph:add_directed_edges(L1, L2, G)    add directed edges from all nodes of L1 to all nodes of L2
-% graph:add_edges(L1, L2, G)			 add undirected edges between all nodes of L1 and all nodes of L2
-%
-% graph:get_edges(G)                     return all directed edges (pairs of nodes) in a graph (undirected edges are listed in both directions)
-% graph:get_adjs(V, G)                   get list of vertices adjacent to a given one
-%
-% graph:bipartite(L1, L2)                construct a bipartite graph with two lists of nodes
-% graph:clique(L)                        construct a clique from a list of nodes
-% graph:random_avg_degree(L, D)          construct a random undirected graph from a list of nodes, with average degree D
 
 new() ->
     dict:new().
@@ -148,7 +131,7 @@ json_format(NodeToJsonFun, G) ->
                 "" -> Sep = "";
                 _ -> Sep = ", "
             end,
-            lists:flatten([Acc, Sep, NodeToJsonFun(V)])
+            lists:flatten([Acc, Sep, "\"", NodeToJsonFun(V), "\""])
         end,
         "",
         get_nodes(G)
@@ -161,25 +144,26 @@ json_format(NodeToJsonFun, G) ->
             end,
             lists:flatten([
                 Acc,
-                Sep,
-                "{" ++ "\"weight\": " ++ Weight ++ ", " ++ "[",
+                io_lib:format("~s[\"", [Sep]),
                 NodeToJsonFun(V1),
-                ", ",
+                "\", \"",
                 NodeToJsonFun(V2),
-                "]"
+                io_lib:format("\", ~w]", [Weight])
             ])
         end,
         "",
         get_edges(G)
     ),
-    "\"nodes\": [" ++ Nodes ++ "],\n\"edges\": [" ++ Edges ++ "]".
+    lists:concat(["\"nodes\": [", Nodes, "],\n\"edges\": [", Edges, "]"]).
 
-show_graph(G) -> show_graph(fun(V) -> lists:flatten(io_lib:format("\"~w\"", [V])) end, G).
-show_graph(NodeToJsonFun, G) ->
-    {ok, File} = file:open("../logs/show_graph.json", [write]),
-    io:format(File, "{~s}\n", [json_format(NodeToJsonFun, G)]),
-    os:cmd("python3 ../utils/show_graph.py ../logs/show_graph.json"),
-    ok.
+fwrite_graph(File, G) ->
+    io:format(File, "{~s}~n", [
+        json_format(fun(V) -> io_lib:format("~w", [V]) end, G)
+    ]).
+fwrite_partial_graph(File, G) ->
+    io:format(File, "{~s,~n", [
+        json_format(fun(V) -> io_lib:format("~w", [V]) end, G)
+    ]).
 
 % RESERVED
 
