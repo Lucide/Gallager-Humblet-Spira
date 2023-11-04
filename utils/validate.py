@@ -2,7 +2,7 @@ import json
 import networkx as nx
 import matplotlib.pyplot as plt
 import sys
-import random
+import io
 import argparse
 
 parser = argparse.ArgumentParser()
@@ -17,7 +17,10 @@ parser.add_argument(
 )
 args = parser.parse_args()
 
-jsondoc = json.load(args.in_file)
+try:
+    jsondoc = json.load(io.TextIOWrapper(args.in_file.buffer, encoding="utf-8-sig"))
+except:
+    jsondoc = json.load(args.in_file)
 
 G = nx.Graph()
 for n in jsondoc["nodes"]:
@@ -29,7 +32,6 @@ for edge in [
     G.add_edge(**edge)
 
 components = {c[0]: c[1] for c in jsondoc["components"]}
-
 
 mst_forest = nx.minimum_spanning_tree(G)
 msts = [

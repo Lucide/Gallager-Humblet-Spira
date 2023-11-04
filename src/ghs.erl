@@ -93,8 +93,7 @@ demo(N) when N > 0 ->
     ),
 
     lists:foreach(fun(Graph_Node) -> Graph_Node ! {start} end, Graph_Nodes),
-    supervisor(Graph),
-    ok.
+    supervisor(Graph).
 
 supervisor(Graph) ->
     supervisor(Graph, length(graph:get_nodes(Graph)), []).
@@ -130,8 +129,7 @@ supervisor_action(Graph, Components) ->
 root_action(Node, #state{representative = none} = State, Component) ->
     broadcast(Node, State, Component);
 root_action(_Node, State, _Component) ->
-    State#state.supervisor ! {component, {State#state.representative, State#state.sum}},
-    ok.
+    State#state.supervisor ! {component, {State#state.representative, State#state.sum}}.
 done_action(Supervisor) ->
     ?LOG_DEBUG("done to ~w", [Supervisor]),
     Supervisor ! {done}.
