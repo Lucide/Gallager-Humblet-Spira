@@ -32,7 +32,15 @@ main(Args) ->
         }),
     logger:set_module_level(?MODULE, debug),
     Config = #{
-        config => #{file => ?Log_path},
+        config => #{
+            file => ?Log_path,
+            % prevent flushing (delete)
+            flush_qlen => 100000,
+            % disable drop mode
+            drop_mode_qlen => 100000,
+            % disable burst detection
+            burst_limit_enable => false
+        },
         level =>
             if
                 Verbose -> debug;
@@ -129,7 +137,8 @@ supervisor_action(Graph, Components) ->
     io:fwrite(standard_io, "\"components\": [~s]}", [String]).
 root_action(Node, #state{representative = none} = State, Component) ->
     broadcast(Node, State, Component);
-root_action(_Node, State, _Component) ->
+root_action(Node, State, _Component) ->
+    ?LOG_DEBUG("~p", [Node#node.minimax_routing_table]),
     State#state.supervisor ! {component, {State#state.representative, State#state.sum}}.
 done_action(Supervisor) ->
     ?LOG_DEBUG("done to ~w", [Supervisor]),
