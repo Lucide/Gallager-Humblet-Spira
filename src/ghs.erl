@@ -46,7 +46,7 @@ main(Args) ->
     ?LOG_DEBUG("N: ~p", [N]),
     demo(N),
     logger_std_h:filesync(to_file_handler),
-    erlang:halt(0).
+    0.
 
 %%====================================================================
 %% Internal functions
@@ -58,7 +58,8 @@ main(Args) ->
     parent = none :: #edge{} | none,
     children = [] :: [#edge{}],
     rejected = [] :: [#edge{}],
-    undecided = [] :: [#edge{}]
+    undecided = [] :: [#edge{}],
+    minimax_routing_table = #{} :: #{pid() => #edge{}}
 }).
 -record(component, {core :: pid(), level = 0 :: non_neg_integer()}).
 -record(candidate, {source_id :: pid(), edge :: #edge{}}).
@@ -247,9 +248,13 @@ node_behaviour(Node, State, Component) ->
             update(Node, State#state{phase = Phase}, New_Component);
         {broadcast} ->
             broadcast(Node, State, Component);
-        {sum, Source_Representative, Source_Sum} ->
-            sum(
-                Node,
+        {convergecast, Source_Representative, Source_Sum, Minimax_Routing_Table} ->
+            convergecast(
+                Node#node{
+                    minimax_routing_table = maps:merge(
+                        Node#node.minimax_routing_table, Minimax_Routing_Table
+                    )
+                },
                 State#state{
                     replies = State#state.replies + 1,
                     representative = max(State#state.representative, Source_Representative),
@@ -257,6 +262,13 @@ node_behaviour(Node, State, Component) ->
                 },
                 Component
             );
+        {route, Dst, Msg} when Dst == Node#node.id ->
+            ?LOG_DEBUG("got long distance ~p", [Msg]),
+            node_behaviour(Node, State, Component);
+        {route, Dst, _} = Msg ->
+            Next_Hop_Edge = maps:get(Dst, Node#node.minimax_routing_table, Node#node.parent),
+            Next_Hop_Edge#edge.dst ! Msg,
+            node_behaviour(Node, State, Component);
         {die} ->
             ?LOG_DEBUG("dies", []),
             ok
@@ -416,7 +428,7 @@ update(Node, #state{candidate = Candidate} = State, Component) ->
     end.
 
 broadcast(#node{children = []} = Node, State, Component) ->
-    sum(
+    convergecast(
         Node,
         State#state{replies = 0, representative = pid_to_list(Node#node.id)},
         Component
@@ -427,21 +439,32 @@ broadcast(Node, State, Component) ->
         Node, State#state{replies = 0, representative = pid_to_list(Node#node.id)}, Component
     ).
 
-sum(#node{parent = none} = Node, State, Component) when
+% compute MST weight
+% calculate minimax routing tables
+convergecast(#node{parent = none} = Node, State, Component) when
     State#state.replies == ?Expected_replies(Node)
 ->
     root_action(Node, State, Component),
     done_action(State#state.supervisor),
     node_behaviour(Node, State, Component);
-sum(Node, State, Component) when State#state.replies == ?Expected_replies(Node) ->
+convergecast(Node, State, Component) when State#state.replies == ?Expected_replies(Node) ->
+    ?LOG_DEBUG("~p", [Node#node.minimax_routing_table]),
+    Rev_Parent_Edge = reverse_edge(Node#node.parent),
     Node#node.parent#edge.dst !
-        {sum, State#state.representative, State#state.sum + Node#node.parent#edge.weight},
+        {convergecast, State#state.representative, State#state.sum + Node#node.parent#edge.weight,
+            maps:merge(
+                maps:from_keys(maps:keys(Node#node.minimax_routing_table), Rev_Parent_Edge),
+                #{Node#node.id => Rev_Parent_Edge}
+            )},
     done_action(State#state.supervisor),
     node_behaviour(Node, State, Component);
-sum(Node, State, Component) ->
+convergecast(Node, State, Component) ->
     node_behaviour(Node, State, Component).
 
 % UTILS
+
+reverse_edge(#edge{dst = Dst, src = Src} = Edge) ->
+    Edge#edge{dst = Src, src = Dst}.
 
 list(none) ->
     [];

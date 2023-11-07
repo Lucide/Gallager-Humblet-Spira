@@ -1,460 +1,386 @@
-<0.9.0> N: 10
-<0.94.0> done to <0.9.0>
-<0.9.0> N=9
-<0.95.0> test to <0.87.0>, {component,<0.95.0>,0}
-<0.91.0> test to <0.90.0>, {component,<0.91.0>,0}
-<0.87.0> test to <0.90.0>, {component,<0.87.0>,0}
-<0.96.0> test to <0.87.0>, {component,<0.96.0>,0}
-<0.93.0> test to <0.87.0>, {component,<0.93.0>,0}
-<0.92.0> test to <0.89.0>, {component,<0.92.0>,0}
-<0.90.0> test to <0.87.0>, {component,<0.90.0>,0}
-<0.87.0> test from <0.95.0>, {component,<0.95.0>,0}
+<0.111.0> N: 5
+<0.117.0> test to <0.120.0>, {component,<0.117.0>,0}
+<0.118.0> test to <0.120.0>, {component,<0.118.0>,0}
+<0.116.0> test to <0.120.0>, {component,<0.116.0>,0}
+<0.119.0> test to <0.116.0>, {component,<0.119.0>,0}
+<0.120.0> test to <0.117.0>, {component,<0.120.0>,0}
+<0.120.0> test from <0.117.0>, {component,<0.117.0>,0}
+<0.116.0> test from <0.119.0>, {component,<0.119.0>,0}
+<0.120.0> accept to <0.117.0>
+<0.117.0> test from <0.120.0>, {component,<0.120.0>,0}
+<0.116.0> accept to <0.119.0>
+<0.117.0> accept to <0.120.0>
+<0.120.0> test from <0.118.0>, {component,<0.118.0>,0}
+<0.117.0> got accept
+<0.120.0> accept to <0.118.0>
+<0.119.0> got accept
+<0.120.0> test from <0.116.0>, {component,<0.116.0>,0}
+<0.117.0> merge to <0.120.0>, 0
+<0.119.0> merge to <0.116.0>, 0
+<0.118.0> got accept
+<0.120.0> accept to <0.116.0>
+<0.118.0> merge to <0.120.0>, 0
+<0.116.0> got accept
+<0.120.0> got accept
+<0.116.0> merge to <0.120.0>, 0
+<0.120.0> merge to <0.117.0>, 0
+<0.120.0> merge from <0.117.0>, 0
+<0.120.0> update to <0.117.0>, searching {component,<0.120.0>,1}
+<0.117.0> merge from <0.120.0>, 0
+<0.117.0> update to <0.120.0>, searching {component,<0.120.0>,1}
+<0.120.0> got update, {component,<0.120.0>,1} searching
+<0.120.0> test to <0.117.0>, {component,<0.120.0>,1}
+<0.117.0> got update, {component,<0.120.0>,1} searching
+<0.120.0> merge (quick) from <0.118.0>, 0
+<0.120.0> update to <0.118.0>, searching {component,<0.120.0>,1}
+<0.117.0> test to <0.120.0>, {component,<0.120.0>,1}
+<0.120.0> merge (quick) from <0.116.0>, 0
+<0.117.0> test from <0.120.0>, {component,<0.120.0>,1}
+<0.120.0> update to <0.116.0>, searching {component,<0.120.0>,1}
+<0.118.0> got update, {component,<0.120.0>,1} searching
+<0.120.0> test from <0.117.0>, {component,<0.120.0>,1}
+<0.120.0> reject to <0.117.0>
+<0.117.0> reject to <0.120.0>
+<0.118.0> test to <0.120.0>, {component,<0.120.0>,1}
+<0.116.0> got update, {component,<0.120.0>,1} searching
+<0.120.0> got reject
+<0.116.0> test to <0.120.0>, {component,<0.120.0>,1}
+<0.117.0> got reject
+<0.120.0> test to <0.116.0>, {component,<0.120.0>,1}
+<0.116.0> merge (quick) from <0.119.0>, 0
+<0.117.0> test to <0.116.0>, {component,<0.120.0>,1}
+<0.120.0> test from <0.118.0>, {component,<0.120.0>,1}
+<0.116.0> update to <0.119.0>, searching {component,<0.120.0>,1}
+<0.116.0> test from <0.120.0>, {component,<0.120.0>,1}
+<0.120.0> reject to <0.118.0>
+<0.119.0> got update, {component,<0.120.0>,1} searching
+<0.116.0> reject to <0.120.0>
+<0.119.0> test to <0.116.0>, {component,<0.120.0>,1}
+<0.120.0> test from <0.116.0>, {component,<0.120.0>,1}
+<0.116.0> test from <0.117.0>, {component,<0.120.0>,1}
+<0.118.0> got reject
+<0.116.0> reject to <0.117.0>
+<0.118.0> test to <0.116.0>, {component,<0.120.0>,1}
+<0.120.0> reject to <0.116.0>
+<0.117.0> got reject
+<0.116.0> test from <0.119.0>, {component,<0.120.0>,1}
+<0.120.0> got reject
+<0.117.0> report to <0.120.0>, none
+<0.120.0> test to <0.118.0>, {component,<0.120.0>,1}
+<0.116.0> reject to <0.119.0>
+<0.116.0> test from <0.118.0>, {component,<0.120.0>,1}
+<0.119.0> got reject
+<0.120.0> got report, none
+<0.116.0> reject to <0.118.0>
+<0.119.0> report to <0.116.0>, none
+<0.118.0> test from <0.120.0>, {component,<0.120.0>,1}
+<0.116.0> got reject
+<0.118.0> reject to <0.120.0>
+<0.116.0> test to <0.117.0>, {component,<0.120.0>,1}
+<0.116.0> got report, none
+<0.120.0> got reject
+<0.117.0> test from <0.116.0>, {component,<0.120.0>,1}
+<0.117.0> reject to <0.116.0>
+<0.118.0> got reject
+<0.116.0> got reject
+<0.116.0> test to <0.119.0>, {component,<0.120.0>,1}
+<0.118.0> report to <0.120.0>, none
+<0.120.0> got report, none
+<0.119.0> test from <0.116.0>, {component,<0.120.0>,1}
+<0.119.0> reject to <0.116.0>
+<0.116.0> got reject
+<0.116.0> test to <0.118.0>, {component,<0.120.0>,1}
+<0.118.0> test from <0.116.0>, {component,<0.120.0>,1}
+<0.118.0> reject to <0.116.0>
+<0.116.0> got reject
+<0.116.0> report to <0.120.0>, none
+<0.120.0> got report, none
+<0.118.0> #{}
+<0.117.0> #{}
+<0.119.0> #{}
+<0.118.0> done to <0.111.0>
+<0.117.0> done to <0.111.0>
+<0.119.0> done to <0.111.0>
+<0.116.0> #{<0.119.0> => {edge,<0.119.0>,<0.116.0>,96}}
+<0.111.0> N=4
+<0.120.0> done to <0.111.0>
+<0.111.0> N=3
+<0.116.0> done to <0.111.0>
+<0.111.0> N=2
+<0.111.0> N=1
+<0.111.0> N=0
+<0.120.0> dies
+<0.116.0> dies
+<0.119.0> dies
+<0.117.0> dies
+<0.118.0> dies
+<0.111.0> N: 5
+<0.137.0> test to <0.140.0>, {component,<0.137.0>,0}
+<0.136.0> test to <0.140.0>, {component,<0.136.0>,0}
+<0.139.0> test to <0.136.0>, {component,<0.139.0>,0}
+<0.138.0> test to <0.140.0>, {component,<0.138.0>,0}
+<0.140.0> test to <0.136.0>, {component,<0.140.0>,0}
+<0.136.0> test from <0.139.0>, {component,<0.139.0>,0}
+<0.140.0> test from <0.137.0>, {component,<0.137.0>,0}
+<0.136.0> accept to <0.139.0>
+<0.140.0> accept to <0.137.0>
+<0.139.0> got accept
+<0.137.0> got accept
+<0.136.0> test from <0.140.0>, {component,<0.140.0>,0}
+<0.136.0> accept to <0.140.0>
+<0.139.0> merge to <0.136.0>, 0
+<0.140.0> test from <0.136.0>, {component,<0.136.0>,0}
+<0.137.0> merge to <0.140.0>, 0
+<0.140.0> accept to <0.136.0>
+<0.140.0> test from <0.138.0>, {component,<0.138.0>,0}
+<0.136.0> got accept
+<0.140.0> accept to <0.138.0>
+<0.140.0> got accept
+<0.136.0> merge to <0.140.0>, 0
+<0.138.0> got accept
+<0.140.0> merge to <0.136.0>, 0
+<0.140.0> merge from <0.136.0>, 0
+<0.140.0> update to <0.136.0>, searching {component,<0.140.0>,1}
+<0.136.0> merge from <0.140.0>, 0
+<0.138.0> merge to <0.140.0>, 0
+<0.136.0> update to <0.140.0>, searching {component,<0.140.0>,1}
+<0.140.0> got update, {component,<0.140.0>,1} searching
+<0.136.0> got update, {component,<0.140.0>,1} searching
+<0.140.0> test to <0.136.0>, {component,<0.140.0>,1}
+<0.140.0> merge (quick) from <0.137.0>, 0
+<0.136.0> test to <0.140.0>, {component,<0.140.0>,1}
+<0.140.0> update to <0.137.0>, searching {component,<0.140.0>,1}
+<0.136.0> merge (quick) from <0.139.0>, 0
+<0.136.0> update to <0.139.0>, searching {component,<0.140.0>,1}
+<0.140.0> merge (quick) from <0.138.0>, 0
+<0.137.0> got update, {component,<0.140.0>,1} searching
+<0.136.0> test from <0.140.0>, {component,<0.140.0>,1}
+<0.140.0> update to <0.138.0>, searching {component,<0.140.0>,1}
+<0.136.0> reject to <0.140.0>
+<0.140.0> test from <0.136.0>, {component,<0.140.0>,1}
+<0.138.0> got update, {component,<0.140.0>,1} searching
+<0.137.0> test to <0.140.0>, {component,<0.140.0>,1}
+<0.139.0> got update, {component,<0.140.0>,1} searching
+<0.138.0> test to <0.140.0>, {component,<0.140.0>,1}
+<0.139.0> test to <0.136.0>, {component,<0.140.0>,1}
+<0.140.0> reject to <0.136.0>
+<0.136.0> test from <0.139.0>, {component,<0.140.0>,1}
+<0.140.0> got reject
+<0.136.0> reject to <0.139.0>
+<0.140.0> test to <0.138.0>, {component,<0.140.0>,1}
+<0.139.0> got reject
+<0.139.0> test to <0.140.0>, {component,<0.140.0>,1}
+<0.138.0> test from <0.140.0>, {component,<0.140.0>,1}
+<0.136.0> got reject
+<0.140.0> test from <0.137.0>, {component,<0.140.0>,1}
+<0.136.0> test to <0.139.0>, {component,<0.140.0>,1}
+<0.138.0> reject to <0.140.0>
+<0.140.0> reject to <0.137.0>
+<0.139.0> test from <0.136.0>, {component,<0.140.0>,1}
+<0.139.0> reject to <0.136.0>
+<0.140.0> test from <0.138.0>, {component,<0.140.0>,1}
+<0.137.0> got reject
+<0.137.0> report to <0.140.0>, none
+<0.136.0> got reject
+<0.140.0> reject to <0.138.0>
+<0.140.0> test from <0.139.0>, {component,<0.140.0>,1}
+<0.140.0> reject to <0.139.0>
+<0.138.0> got reject
+<0.140.0> got reject
+<0.139.0> got reject
+<0.136.0> test to <0.138.0>, {component,<0.140.0>,1}
+<0.138.0> test to <0.136.0>, {component,<0.140.0>,1}
+<0.140.0> test to <0.137.0>, {component,<0.140.0>,1}
+<0.139.0> report to <0.136.0>, none
+<0.137.0> test from <0.140.0>, {component,<0.140.0>,1}
+<0.138.0> test from <0.136.0>, {component,<0.140.0>,1}
+<0.140.0> got report, none
+<0.136.0> test from <0.138.0>, {component,<0.140.0>,1}
+<0.137.0> reject to <0.140.0>
+<0.138.0> reject to <0.136.0>
+<0.140.0> got reject
+<0.136.0> reject to <0.138.0>
+<0.140.0> test to <0.139.0>, {component,<0.140.0>,1}
+<0.139.0> test from <0.140.0>, {component,<0.140.0>,1}
+<0.136.0> got report, none
+<0.139.0> reject to <0.140.0>
+<0.138.0> got reject
+<0.140.0> got reject
+<0.136.0> got reject
+<0.136.0> report to <0.140.0>, none
+<0.138.0> report to <0.140.0>, none
+<0.140.0> got report, none
+<0.140.0> got report, none
+<0.137.0> #{}
+<0.138.0> #{}
+<0.139.0> #{}
+<0.138.0> done to <0.111.0>
+<0.139.0> done to <0.111.0>
+<0.136.0> #{<0.139.0> => {edge,<0.139.0>,<0.136.0>,22}}
+<0.111.0> N=4
+<0.137.0> done to <0.111.0>
+<0.136.0> done to <0.111.0>
+<0.111.0> N=3
+<0.140.0> done to <0.111.0>
+<0.111.0> N=2
+<0.111.0> N=1
+<0.111.0> N=0
+<0.137.0> got long distance "helo"
+<0.137.0> got long distance "helo"
+<0.138.0> got long distance "helo"
+<0.139.0> got long distance "helo"
+<0.9.0> N: 5
+<0.91.0> test to <0.87.0>, {component,<0.91.0>,0}
+<0.90.0> test to <0.88.0>, {component,<0.90.0>,0}
 <0.89.0> test to <0.88.0>, {component,<0.89.0>,0}
-<0.88.0> test to <0.89.0>, {component,<0.88.0>,0}
-<0.87.0> accept to <0.95.0>
-<0.90.0> test from <0.91.0>, {component,<0.91.0>,0}
-<0.95.0> got accept
-<0.89.0> test from <0.92.0>, {component,<0.92.0>,0}
+<0.88.0> test to <0.90.0>, {component,<0.88.0>,0}
+<0.87.0> test to <0.91.0>, {component,<0.87.0>,0}
+<0.90.0> test from <0.88.0>, {component,<0.88.0>,0}
+<0.88.0> test from <0.90.0>, {component,<0.90.0>,0}
+<0.87.0> test from <0.91.0>, {component,<0.91.0>,0}
+<0.90.0> accept to <0.88.0>
+<0.91.0> test from <0.87.0>, {component,<0.87.0>,0}
+<0.88.0> accept to <0.90.0>
+<0.87.0> accept to <0.91.0>
 <0.88.0> test from <0.89.0>, {component,<0.89.0>,0}
-<0.90.0> accept to <0.91.0>
-<0.89.0> accept to <0.92.0>
-<0.87.0> test from <0.96.0>, {component,<0.96.0>,0}
- Handler to_file_handler switched from async to drop mode
-<0.90.0> test from <0.87.0>, {component,<0.87.0>,0}
-<0.88.0> accept to <0.89.0>
-<0.95.0> merge to <0.87.0>, 0
-<0.89.0> test from <0.88.0>, {component,<0.88.0>,0}
-<0.92.0> got accept
-<0.91.0> got accept
-<0.90.0> accept to <0.87.0>
-<0.87.0> accept to <0.96.0>
-<0.89.0> accept to <0.88.0>
-<0.96.0> got accept
-<0.92.0> merge to <0.89.0>, 0
-<0.91.0> merge to <0.90.0>, 0
-<0.88.0> got accept
-<0.87.0> test from <0.93.0>, {component,<0.93.0>,0}
-<0.89.0> got accept
-<0.96.0> merge to <0.87.0>, 0
-<0.88.0> merge to <0.89.0>, 0
-<0.87.0> accept to <0.93.0>
-<0.89.0> merge to <0.88.0>, 0
-<0.88.0> merge from <0.89.0>, 0
-<0.89.0> merge from <0.88.0>, 0
-<0.93.0> got accept
-<0.87.0> test from <0.90.0>, {component,<0.90.0>,0}
-<0.88.0> update to <0.89.0>, searching {component,<0.89.0>,1}
-<0.89.0> update to <0.88.0>, searching {component,<0.89.0>,1}
-<0.87.0> accept to <0.90.0>
-<0.93.0> merge to <0.87.0>, 0
-<0.89.0> got update, {component,<0.89.0>,1} searching
 <0.90.0> got accept
-<0.88.0> got update, {component,<0.89.0>,1} searching
+<0.91.0> accept to <0.87.0>
 <0.87.0> got accept
-<0.90.0> merge to <0.87.0>, 0
-<0.89.0> test to <0.88.0>, {component,<0.89.0>,1}
-<0.88.0> test to <0.89.0>, {component,<0.89.0>,1}
-<0.87.0> merge to <0.90.0>, 0
-<0.89.0> merge (quick) from <0.92.0>, 0
-<0.87.0> merge from <0.90.0>, 0
-<0.87.0> update to <0.90.0>, searching {component,<0.90.0>,1}
-<0.90.0> merge from <0.87.0>, 0
-<0.88.0> test from <0.89.0>, {component,<0.89.0>,1}
-<0.89.0> update to <0.92.0>, searching {component,<0.89.0>,1}
-<0.90.0> update to <0.87.0>, searching {component,<0.90.0>,1}
-<0.88.0> reject to <0.89.0>
- Handler to_file_handler switched from drop to sync mode
-<0.92.0> got update, {component,<0.89.0>,1} searching
-<0.89.0> test from <0.88.0>, {component,<0.89.0>,1}
-<0.87.0> got update, {component,<0.90.0>,1} searching
-<0.92.0> test to <0.89.0>, {component,<0.89.0>,1}
-<0.87.0> test to <0.90.0>, {component,<0.90.0>,1}
-<0.90.0> got update, {component,<0.90.0>,1} searching
-<0.89.0> reject to <0.88.0>
-<0.87.0> merge (quick) from <0.95.0>, 0
-<0.89.0> got reject
-<0.87.0> update to <0.95.0>, searching {component,<0.90.0>,1}
-<0.89.0> test to <0.87.0>, {component,<0.89.0>,1}
-<0.87.0> merge (quick) from <0.96.0>, 0
-<0.90.0> test to <0.87.0>, {component,<0.90.0>,1}
-<0.89.0> test from <0.92.0>, {component,<0.89.0>,1}
-<0.87.0> update to <0.96.0>, searching {component,<0.90.0>,1}
-<0.89.0> reject to <0.92.0>
-<0.88.0> got reject
-<0.87.0> merge (quick) from <0.93.0>, 0
-<0.87.0> update to <0.93.0>, searching {component,<0.90.0>,1}
-<0.95.0> got update, {component,<0.90.0>,1} searching
-<0.87.0> test from <0.89.0>, {component,<0.89.0>,1}
-<0.87.0> accept to <0.89.0>
+<0.88.0> accept to <0.89.0>
+<0.91.0> got accept
 <0.89.0> got accept
-<0.90.0> merge (quick) from <0.91.0>, 0
-<0.87.0> test from <0.90.0>, {component,<0.90.0>,1}
-<0.87.0> reject to <0.90.0>
-<0.93.0> got update, {component,<0.90.0>,1} searching
-<0.88.0> test to <0.87.0>, {component,<0.89.0>,1}
-<0.96.0> got update, {component,<0.90.0>,1} searching
-<0.87.0> test from <0.88.0>, {component,<0.89.0>,1}
-<0.93.0> test to <0.87.0>, {component,<0.90.0>,1}
-<0.92.0> got reject
-<0.90.0> update to <0.91.0>, searching {component,<0.90.0>,1}
-<0.87.0> accept to <0.88.0>
-<0.87.0> test from <0.93.0>, {component,<0.90.0>,1}
-<0.87.0> reject to <0.93.0>
-<0.93.0> got reject
-<0.93.0> report to <0.87.0>, none
-<0.87.0> got report, none
-<0.95.0> test to <0.87.0>, {component,<0.90.0>,1}
-<0.87.0> test from <0.95.0>, {component,<0.90.0>,1}
-<0.87.0> reject to <0.95.0>
-<0.95.0> got reject
-<0.90.0> test from <0.87.0>, {component,<0.90.0>,1}
-<0.91.0> got update, {component,<0.90.0>,1} searching
-<0.95.0> test to <0.90.0>, {component,<0.90.0>,1}
-<0.96.0> test to <0.87.0>, {component,<0.90.0>,1}
-<0.92.0> report to <0.89.0>, none
 <0.88.0> got accept
-<0.87.0> test from <0.96.0>, {component,<0.90.0>,1}
-<0.91.0> test to <0.90.0>, {component,<0.90.0>,1}
-<0.89.0> got report, none
-<0.90.0> reject to <0.87.0>
-<0.87.0> reject to <0.96.0>
-<0.88.0> report to <0.89.0>, {candidate,<0.88.0>,{edge,<0.87.0>,<0.88.0>,47}}
-<0.90.0> got reject
-<0.87.0> got reject
-<0.96.0> got reject
-<0.87.0> test to <0.93.0>, {component,<0.90.0>,1}
-<0.89.0> got report, {candidate,<0.88.0>,{edge,<0.87.0>,<0.88.0>,47}}
-<0.93.0> test from <0.87.0>, {component,<0.90.0>,1}
-<0.89.0> notify to <0.88.0>
-<0.90.0> test to <0.95.0>, {component,<0.90.0>,1}
-<0.96.0> report to <0.87.0>, none
-<0.88.0> got notify
-<0.90.0> test from <0.95.0>, {component,<0.90.0>,1}
-<0.88.0> merge to <0.87.0>, 1
-<0.93.0> reject to <0.87.0>
-<0.87.0> got report, none
-<0.87.0> got reject
-<0.95.0> test from <0.90.0>, {component,<0.90.0>,1}
-<0.90.0> reject to <0.95.0>
-<0.87.0> test to <0.95.0>, {component,<0.90.0>,1}
-<0.95.0> reject to <0.90.0>
-<0.90.0> test from <0.91.0>, {component,<0.90.0>,1}
-<0.95.0> got reject
-<0.90.0> reject to <0.91.0>
+<0.91.0> merge to <0.87.0>, 0
+<0.90.0> merge to <0.88.0>, 0
+<0.88.0> merge to <0.90.0>, 0
+<0.87.0> merge to <0.91.0>, 0
+<0.89.0> merge to <0.88.0>, 0
+<0.90.0> merge from <0.88.0>, 0
+<0.88.0> merge from <0.90.0>, 0
+<0.91.0> merge from <0.87.0>, 0
+<0.88.0> update to <0.90.0>, searching {component,<0.90.0>,1}
+<0.87.0> merge from <0.91.0>, 0
+<0.90.0> update to <0.88.0>, searching {component,<0.90.0>,1}
+<0.91.0> update to <0.87.0>, searching {component,<0.91.0>,1}
+<0.90.0> got update, {component,<0.90.0>,1} searching
+<0.90.0> test to <0.88.0>, {component,<0.90.0>,1}
+<0.87.0> update to <0.91.0>, searching {component,<0.91.0>,1}
+<0.88.0> got update, {component,<0.90.0>,1} searching
+<0.91.0> got update, {component,<0.91.0>,1} searching
+<0.88.0> test to <0.90.0>, {component,<0.90.0>,1}
+<0.87.0> got update, {component,<0.91.0>,1} searching
+<0.87.0> test to <0.91.0>, {component,<0.91.0>,1}
+<0.91.0> test to <0.87.0>, {component,<0.91.0>,1}
+<0.88.0> merge (quick) from <0.89.0>, 0
+<0.90.0> test from <0.88.0>, {component,<0.90.0>,1}
+<0.90.0> reject to <0.88.0>
+<0.91.0> test from <0.87.0>, {component,<0.91.0>,1}
+<0.87.0> test from <0.91.0>, {component,<0.91.0>,1}
+<0.88.0> update to <0.89.0>, searching {component,<0.90.0>,1}
+<0.87.0> reject to <0.91.0>
+<0.89.0> got update, {component,<0.90.0>,1} searching
+<0.91.0> reject to <0.87.0>
+<0.88.0> test from <0.90.0>, {component,<0.90.0>,1}
 <0.91.0> got reject
-<0.90.0> got reject
-<0.95.0> test to <0.88.0>, {component,<0.90.0>,1}
-<0.91.0> report to <0.90.0>, none
-<0.90.0> test to <0.91.0>, {component,<0.90.0>,1}
-<0.91.0> test from <0.90.0>, {component,<0.90.0>,1}
-<0.90.0> got report, none
-<0.95.0> test from <0.87.0>, {component,<0.90.0>,1}
-<0.88.0> test from <0.95.0>, {component,<0.90.0>,1}
-<0.91.0> reject to <0.90.0>
-<0.88.0> accept to <0.95.0>
-<0.90.0> got reject
-<0.95.0> reject to <0.87.0>
-<0.95.0> got accept
+<0.89.0> test to <0.88.0>, {component,<0.90.0>,1}
+<0.91.0> test to <0.89.0>, {component,<0.91.0>,1}
 <0.87.0> got reject
-<0.87.0> test to <0.96.0>, {component,<0.90.0>,1}
-<0.95.0> report to <0.87.0>, {candidate,<0.95.0>,{edge,<0.88.0>,<0.95.0>,94}}
-<0.96.0> test from <0.87.0>, {component,<0.90.0>,1}
-<0.96.0> reject to <0.87.0>
-<0.87.0> got report, {candidate,<0.95.0>,{edge,<0.88.0>,<0.95.0>,94}}
-<0.87.0> got reject
-<0.87.0> test to <0.88.0>, {component,<0.90.0>,1}
-<0.88.0> test from <0.87.0>, {component,<0.90.0>,1}
+<0.88.0> reject to <0.90.0>
+<0.87.0> test to <0.88.0>, {component,<0.91.0>,1}
+<0.90.0> got reject
+<0.89.0> test from <0.91.0>, {component,<0.91.0>,1}
+<0.90.0> test to <0.87.0>, {component,<0.90.0>,1}
+<0.88.0> got reject
+<0.89.0> accept to <0.91.0>
+<0.87.0> test from <0.90.0>, {component,<0.90.0>,1}
+<0.88.0> test to <0.89.0>, {component,<0.90.0>,1}
+<0.87.0> accept to <0.90.0>
+<0.90.0> got accept
+<0.91.0> got accept
+<0.89.0> test from <0.88.0>, {component,<0.90.0>,1}
+<0.88.0> test from <0.89.0>, {component,<0.90.0>,1}
+<0.89.0> reject to <0.88.0>
+<0.88.0> reject to <0.89.0>
+<0.89.0> got reject
+<0.89.0> test to <0.91.0>, {component,<0.90.0>,1}
+<0.91.0> test from <0.89.0>, {component,<0.90.0>,1}
+<0.88.0> test from <0.87.0>, {component,<0.91.0>,1}
+<0.91.0> accept to <0.89.0>
+<0.89.0> got accept
 <0.88.0> accept to <0.87.0>
 <0.87.0> got accept
-<0.87.0> report to <0.90.0>, {candidate,<0.87.0>,{edge,<0.88.0>,<0.87.0>,47}}
-<0.90.0> got report, {candidate,<0.87.0>,{edge,<0.88.0>,<0.87.0>,47}}
-<0.90.0> notify to <0.87.0>
+<0.88.0> got reject
+<0.89.0> report to <0.88.0>, {candidate,<0.89.0>,{edge,<0.91.0>,<0.89.0>,76}}
+<0.87.0> report to <0.91.0>, {candidate,<0.87.0>,{edge,<0.88.0>,<0.87.0>,62}}
+<0.88.0> test to <0.87.0>, {component,<0.90.0>,1}
+<0.91.0> got report, {candidate,<0.87.0>,{edge,<0.88.0>,<0.87.0>,62}}
+<0.88.0> got report, {candidate,<0.89.0>,{edge,<0.91.0>,<0.89.0>,76}}
+<0.91.0> notify to <0.87.0>
+<0.87.0> test from <0.88.0>, {component,<0.90.0>,1}
+<0.87.0> accept to <0.88.0>
 <0.87.0> got notify
+<0.88.0> got accept
 <0.87.0> merge to <0.88.0>, 1
+<0.88.0> report to <0.90.0>, {candidate,<0.88.0>,{edge,<0.87.0>,<0.88.0>,62}}
+<0.90.0> got report, {candidate,<0.88.0>,{edge,<0.87.0>,<0.88.0>,62}}
+<0.90.0> notify to <0.88.0>
+<0.88.0> got notify
+<0.88.0> merge to <0.87.0>, 1
 <0.88.0> merge from <0.87.0>, 1
 <0.87.0> merge from <0.88.0>, 1
 <0.88.0> update to <0.87.0>, searching {component,<0.88.0>,2}
 <0.87.0> update to <0.88.0>, searching {component,<0.88.0>,2}
-<0.88.0> got update, {component,<0.88.0>,2} searching
 <0.87.0> got update, {component,<0.88.0>,2} searching
-<0.88.0> update to <0.89.0>, searching {component,<0.88.0>,2}
-<0.87.0> update to <0.90.0>, searching {component,<0.88.0>,2}
-<0.89.0> got update, {component,<0.88.0>,2} searching
-<0.87.0> update to <0.93.0>, searching {component,<0.88.0>,2}
-<0.90.0> got update, {component,<0.88.0>,2} searching
-<0.88.0> test to <0.87.0>, {component,<0.88.0>,2}
-<0.87.0> update to <0.96.0>, searching {component,<0.88.0>,2}
-<0.89.0> update to <0.92.0>, searching {component,<0.88.0>,2}
-<0.90.0> update to <0.91.0>, searching {component,<0.88.0>,2}
-<0.87.0> update to <0.95.0>, searching {component,<0.88.0>,2}
-<0.93.0> got update, {component,<0.88.0>,2} searching
+<0.88.0> got update, {component,<0.88.0>,2} searching
+<0.87.0> update to <0.91.0>, searching {component,<0.88.0>,2}
+<0.88.0> update to <0.90.0>, searching {component,<0.88.0>,2}
 <0.87.0> test to <0.88.0>, {component,<0.88.0>,2}
-<0.88.0> test from <0.87.0>, {component,<0.88.0>,2}
-<0.89.0> test to <0.87.0>, {component,<0.88.0>,2}
-<0.93.0> report to <0.87.0>, none
-<0.96.0> got update, {component,<0.88.0>,2} searching
-<0.92.0> got update, {component,<0.88.0>,2} searching
-<0.87.0> test from <0.88.0>, {component,<0.88.0>,2}
-<0.95.0> got update, {component,<0.88.0>,2} searching
-<0.88.0> reject to <0.87.0>
-<0.87.0> reject to <0.88.0>
-<0.88.0> got reject
-<0.87.0> test from <0.89.0>, {component,<0.88.0>,2}
-<0.95.0> test to <0.88.0>, {component,<0.88.0>,2}
-<0.96.0> report to <0.87.0>, none
-<0.88.0> test to <0.95.0>, {component,<0.88.0>,2}
-<0.92.0> report to <0.89.0>, none
 <0.91.0> got update, {component,<0.88.0>,2} searching
-<0.88.0> test from <0.95.0>, {component,<0.88.0>,2}
-<0.88.0> reject to <0.95.0>
-<0.91.0> report to <0.90.0>, none
-<0.90.0> got report, none
-<0.89.0> got report, none
-<0.87.0> reject to <0.89.0>
-<0.95.0> test from <0.88.0>, {component,<0.88.0>,2}
-<0.90.0> report to <0.87.0>, none
-<0.89.0> got reject
-<0.87.0> got report, none
-<0.87.0> got reject
-<0.95.0> reject to <0.88.0>
-<0.89.0> test to <0.92.0>, {component,<0.88.0>,2}
-<0.92.0> test from <0.89.0>, {component,<0.88.0>,2}
-<0.87.0> test to <0.89.0>, {component,<0.88.0>,2}
-<0.95.0> got reject
-<0.87.0> got report, none
-<0.92.0> reject to <0.89.0>
-<0.89.0> test from <0.87.0>, {component,<0.88.0>,2}
-<0.88.0> got reject
-<0.87.0> got report, none
-<0.89.0> reject to <0.87.0>
-<0.95.0> report to <0.87.0>, none
-<0.87.0> got reject
-<0.89.0> got reject
-<0.87.0> got report, none
-<0.87.0> report to <0.88.0>, none
-<0.89.0> report to <0.88.0>, none
-<0.88.0> got report, none
-<0.88.0> got report, none
-<0.93.0> done to <0.9.0>
-<0.95.0> done to <0.9.0>
-<0.96.0> done to <0.9.0>
-<0.92.0> done to <0.9.0>
-<0.91.0> done to <0.9.0>
-<0.87.0> done to <0.9.0>
-<0.89.0> done to <0.9.0>
-<0.9.0> N=8
-<0.90.0> done to <0.9.0>
-<0.9.0> N=7
-<0.88.0> done to <0.9.0>
-<0.9.0> N=6
-<0.9.0> N=5
-<0.9.0> N=4
-<0.9.0> N=3
-<0.9.0> N=2
-<0.9.0> N=1
-<0.9.0> N=0
-<0.9.0> N: 10
-<0.90.0> done to <0.9.0>
-<0.9.0> N=9
-<0.96.0> test to <0.87.0>, {component,<0.96.0>,0}
-<0.93.0> test to <0.88.0>, {component,<0.93.0>,0}
-<0.94.0> test to <0.87.0>, {component,<0.94.0>,0}
-<0.95.0> test to <0.87.0>, {component,<0.95.0>,0}
-<0.92.0> test to <0.95.0>, {component,<0.92.0>,0}
-<0.91.0> test to <0.87.0>, {component,<0.91.0>,0}
-<0.89.0> test to <0.95.0>, {component,<0.89.0>,0}
-<0.88.0> test to <0.87.0>, {component,<0.88.0>,0}
-<0.87.0> test to <0.88.0>, {component,<0.87.0>,0}
-<0.87.0> test from <0.96.0>, {component,<0.96.0>,0}
-<0.88.0> test from <0.93.0>, {component,<0.93.0>,0}
-<0.95.0> test from <0.92.0>, {component,<0.92.0>,0}
-<0.95.0> accept to <0.92.0>
-<0.87.0> accept to <0.96.0>
-<0.88.0> accept to <0.93.0>
-<0.95.0> test from <0.89.0>, {component,<0.89.0>,0}
-<0.88.0> test from <0.87.0>, {component,<0.87.0>,0}
-<0.87.0> test from <0.94.0>, {component,<0.94.0>,0}
-<0.93.0> got accept
-<0.96.0> got accept
-<0.92.0> got accept
-<0.93.0> merge to <0.88.0>, 0
-<0.88.0> accept to <0.87.0>
-<0.95.0> accept to <0.89.0>
-<0.87.0> accept to <0.94.0>
-<0.96.0> merge to <0.87.0>, 0
-<0.89.0> got accept
-<0.94.0> got accept
-<0.92.0> merge to <0.95.0>, 0
-<0.89.0> merge to <0.95.0>, 0
-<0.94.0> merge to <0.87.0>, 0
-<0.87.0> test from <0.95.0>, {component,<0.95.0>,0}
-<0.87.0> accept to <0.95.0>
-<0.95.0> got accept
-<0.87.0> test from <0.91.0>, {component,<0.91.0>,0}
-<0.95.0> merge to <0.87.0>, 0
-<0.87.0> accept to <0.91.0>
-<0.91.0> got accept
-<0.87.0> test from <0.88.0>, {component,<0.88.0>,0}
-<0.91.0> merge to <0.87.0>, 0
-<0.87.0> accept to <0.88.0>
-<0.88.0> got accept
-<0.87.0> got accept
-<0.88.0> merge to <0.87.0>, 0
-<0.87.0> merge to <0.88.0>, 0
-<0.88.0> merge from <0.87.0>, 0
-<0.87.0> merge from <0.88.0>, 0
-<0.87.0> update to <0.88.0>, searching {component,<0.88.0>,1}
-<0.88.0> update to <0.87.0>, searching {component,<0.88.0>,1}
-<0.88.0> got update, {component,<0.88.0>,1} searching
-<0.87.0> got update, {component,<0.88.0>,1} searching
-<0.88.0> test to <0.87.0>, {component,<0.88.0>,1}
-<0.88.0> merge (quick) from <0.93.0>, 0
-<0.87.0> test to <0.88.0>, {component,<0.88.0>,1}
-<0.88.0> update to <0.93.0>, searching {component,<0.88.0>,1}
-<0.87.0> merge (quick) from <0.96.0>, 0
-<0.88.0> test from <0.87.0>, {component,<0.88.0>,1}
-<0.87.0> update to <0.96.0>, searching {component,<0.88.0>,1}
-<0.93.0> got update, {component,<0.88.0>,1} searching
-<0.87.0> merge (quick) from <0.94.0>, 0
-<0.93.0> test to <0.88.0>, {component,<0.88.0>,1}
-<0.96.0> got update, {component,<0.88.0>,1} searching
-<0.88.0> reject to <0.87.0>
-<0.87.0> update to <0.94.0>, searching {component,<0.88.0>,1}
-<0.96.0> test to <0.87.0>, {component,<0.88.0>,1}
-<0.94.0> got update, {component,<0.88.0>,1} searching
-<0.87.0> merge (quick) from <0.95.0>, 0
-<0.94.0> test to <0.87.0>, {component,<0.88.0>,1}
-<0.88.0> test from <0.93.0>, {component,<0.88.0>,1}
-<0.88.0> reject to <0.93.0>
-<0.93.0> got reject
-<0.87.0> update to <0.95.0>, searching {component,<0.88.0>,1}
-<0.93.0> test to <0.95.0>, {component,<0.88.0>,1}
-<0.95.0> got update, {component,<0.88.0>,1} searching
-<0.87.0> merge (quick) from <0.91.0>, 0
-<0.95.0> test to <0.87.0>, {component,<0.88.0>,1}
-<0.87.0> update to <0.91.0>, searching {component,<0.88.0>,1}
-<0.95.0> merge (quick) from <0.92.0>, 0
-<0.91.0> got update, {component,<0.88.0>,1} searching
-<0.87.0> test from <0.88.0>, {component,<0.88.0>,1}
-<0.95.0> update to <0.92.0>, searching {component,<0.88.0>,1}
+<0.88.0> update to <0.89.0>, searching {component,<0.88.0>,2}
+<0.89.0> got update, {component,<0.88.0>,2} searching
+<0.90.0> got update, {component,<0.88.0>,2} searching
+<0.91.0> test to <0.89.0>, {component,<0.88.0>,2}
+<0.88.0> test to <0.87.0>, {component,<0.88.0>,2}
+<0.90.0> test to <0.87.0>, {component,<0.88.0>,2}
+<0.87.0> test from <0.88.0>, {component,<0.88.0>,2}
+<0.89.0> test to <0.91.0>, {component,<0.88.0>,2}
+<0.89.0> test from <0.91.0>, {component,<0.88.0>,2}
+<0.88.0> test from <0.87.0>, {component,<0.88.0>,2}
 <0.87.0> reject to <0.88.0>
-<0.91.0> test to <0.87.0>, {component,<0.88.0>,1}
-<0.95.0> merge (quick) from <0.89.0>, 0
-<0.92.0> got update, {component,<0.88.0>,1} searching
-<0.92.0> test to <0.95.0>, {component,<0.88.0>,1}
-<0.87.0> got reject
-<0.88.0> got reject
-<0.88.0> test to <0.93.0>, {component,<0.88.0>,1}
-<0.87.0> test to <0.96.0>, {component,<0.88.0>,1}
-<0.95.0> update to <0.89.0>, searching {component,<0.88.0>,1}
-<0.93.0> test from <0.88.0>, {component,<0.88.0>,1}
-<0.87.0> test from <0.96.0>, {component,<0.88.0>,1}
-<0.95.0> test from <0.93.0>, {component,<0.88.0>,1}
-<0.96.0> test from <0.87.0>, {component,<0.88.0>,1}
-<0.87.0> reject to <0.96.0>
-<0.93.0> reject to <0.88.0>
-<0.89.0> got update, {component,<0.88.0>,1} searching
-<0.87.0> test from <0.94.0>, {component,<0.88.0>,1}
-<0.95.0> reject to <0.93.0>
-<0.96.0> reject to <0.87.0>
-<0.88.0> got reject
-<0.95.0> test from <0.92.0>, {component,<0.88.0>,1}
-<0.87.0> reject to <0.94.0>
-<0.89.0> test to <0.95.0>, {component,<0.88.0>,1}
-<0.93.0> got reject
-<0.96.0> got reject
-<0.87.0> test from <0.95.0>, {component,<0.88.0>,1}
-<0.95.0> reject to <0.92.0>
-<0.88.0> test to <0.95.0>, {component,<0.88.0>,1}
-<0.92.0> got reject
-<0.93.0> report to <0.88.0>, none
-<0.94.0> got reject
-<0.96.0> report to <0.87.0>, none
-<0.95.0> test from <0.89.0>, {component,<0.88.0>,1}
-<0.87.0> reject to <0.95.0>
-<0.92.0> report to <0.95.0>, none
-<0.88.0> got report, none
-<0.87.0> test from <0.91.0>, {component,<0.88.0>,1}
-<0.95.0> reject to <0.89.0>
-<0.94.0> report to <0.87.0>, none
-<0.95.0> test from <0.88.0>, {component,<0.88.0>,1}
-<0.87.0> reject to <0.91.0>
+<0.89.0> reject to <0.91.0>
+<0.91.0> test from <0.89.0>, {component,<0.88.0>,2}
+<0.87.0> test from <0.90.0>, {component,<0.88.0>,2}
+<0.91.0> reject to <0.89.0>
+<0.88.0> reject to <0.87.0>
+<0.87.0> reject to <0.90.0>
 <0.89.0> got reject
-<0.89.0> test to <0.88.0>, {component,<0.88.0>,1}
 <0.91.0> got reject
 <0.87.0> got reject
-<0.91.0> test to <0.95.0>, {component,<0.88.0>,1}
-<0.95.0> reject to <0.88.0>
-<0.88.0> test from <0.89.0>, {component,<0.88.0>,1}
-<0.95.0> got reject
-<0.88.0> reject to <0.89.0>
-<0.87.0> test to <0.91.0>, {component,<0.88.0>,1}
-<0.95.0> test to <0.89.0>, {component,<0.88.0>,1}
-<0.95.0> got report, none
-<0.87.0> got report, none
 <0.88.0> got reject
-<0.91.0> test from <0.87.0>, {component,<0.88.0>,1}
-<0.87.0> got report, none
-<0.89.0> got reject
-<0.88.0> test to <0.89.0>, {component,<0.88.0>,1}
-<0.91.0> reject to <0.87.0>
-<0.95.0> test from <0.91.0>, {component,<0.88.0>,1}
-<0.89.0> report to <0.95.0>, none
-<0.95.0> reject to <0.91.0>
-<0.89.0> test from <0.95.0>, {component,<0.88.0>,1}
-<0.95.0> got report, none
-<0.87.0> got reject
-<0.87.0> test to <0.95.0>, {component,<0.88.0>,1}
-<0.91.0> got reject
-<0.95.0> test from <0.87.0>, {component,<0.88.0>,1}
+<0.90.0> got reject
+<0.90.0> report to <0.88.0>, none
+<0.87.0> test to <0.90.0>, {component,<0.88.0>,2}
+<0.89.0> report to <0.88.0>, none
 <0.91.0> report to <0.87.0>, none
-<0.89.0> reject to <0.95.0>
-<0.95.0> reject to <0.87.0>
-<0.89.0> test from <0.88.0>, {component,<0.88.0>,1}
+<0.88.0> got report, none
+<0.90.0> test from <0.87.0>, {component,<0.88.0>,2}
+<0.88.0> got report, none
 <0.87.0> got report, none
-<0.95.0> got reject
-<0.89.0> reject to <0.88.0>
+<0.90.0> reject to <0.87.0>
 <0.87.0> got reject
-<0.95.0> test to <0.88.0>, {component,<0.88.0>,1}
-<0.87.0> test to <0.94.0>, {component,<0.88.0>,1}
-<0.88.0> got reject
-<0.94.0> test from <0.87.0>, {component,<0.88.0>,1}
-<0.88.0> test from <0.95.0>, {component,<0.88.0>,1}
-<0.94.0> reject to <0.87.0>
-<0.87.0> got reject
-<0.88.0> reject to <0.95.0>
-<0.95.0> got reject
-<0.95.0> test to <0.92.0>, {component,<0.88.0>,1}
-<0.92.0> test from <0.95.0>, {component,<0.88.0>,1}
-<0.92.0> reject to <0.95.0>
-<0.95.0> got reject
-<0.95.0> test to <0.91.0>, {component,<0.88.0>,1}
-<0.91.0> test from <0.95.0>, {component,<0.88.0>,1}
-<0.91.0> reject to <0.95.0>
-<0.95.0> got reject
-<0.95.0> test to <0.93.0>, {component,<0.88.0>,1}
-<0.93.0> test from <0.95.0>, {component,<0.88.0>,1}
-<0.93.0> reject to <0.95.0>
-<0.95.0> got reject
-<0.95.0> report to <0.87.0>, none
-<0.87.0> got report, none
 <0.87.0> report to <0.88.0>, none
 <0.88.0> got report, none
-<0.92.0> done to <0.9.0>
-<0.91.0> done to <0.9.0>
-<0.96.0> done to <0.9.0>
+<0.90.0> #{}
+<0.89.0> #{}
+<0.91.0> #{}
+<0.90.0> done to <0.9.0>
 <0.89.0> done to <0.9.0>
-<0.9.0> N=8
-<0.94.0> done to <0.9.0>
-<0.93.0> done to <0.9.0>
-<0.88.0> done to <0.9.0>
-<0.95.0> done to <0.9.0>
-<0.87.0> done to <0.9.0>
-<0.9.0> N=7
-<0.9.0> N=6
-<0.9.0> N=5
+<0.91.0> done to <0.9.0>
 <0.9.0> N=4
+<0.87.0> #{<0.91.0> => {edge,<0.91.0>,<0.87.0>,60}}
 <0.9.0> N=3
+<0.87.0> done to <0.9.0>
+<0.88.0> done to <0.9.0>
 <0.9.0> N=2
 <0.9.0> N=1
 <0.9.0> N=0
