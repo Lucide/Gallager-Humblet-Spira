@@ -265,7 +265,7 @@ L'algoritmo GHS può essere utilizzato per risolvere due problemi fondamentali d
 
 \chapter{Il linguaggio Erlang}
 
-Erlang è un linguaggio funzionale orientato allo sviluppo di software distribuito. La caratteristica principale che lo distingue è il supporto nativo 
+Erlang è un linguaggio funzionale orientato allo sviluppo di software distribuito. La caratteristica principale che lo distingue è l'architettura a processi. Un processo Erlang è un costrutto leggero 
 
 \chapter{Note sull'implementazione}
 
@@ -276,9 +276,9 @@ Dato un grafo non orientato connesso e pesato $G$, il problema del cammino minim
 \paragraph{Esiste sempre un cammino minimax nell'MST}
 Per ogni coppia di nodi $p$ e $q$, esiste sempre un cammino minimax interamente contenuto nell'MST.
 
-Supponiamo per assurdo che non esista un cammino minimax completamente contenuto nell'MST $T$; sia quindi $e_{p,q}$ un arco non passante per $T$. Allora esiste un cammino $\epsilon(p,q)$ in $T$ dove $e_{p,q}^T\in\epsilon(p,q)$ è l'arco di peso massimo. Se $w(e_{p,q})<w(e_{p,q}^T)$ allora sostituendo $e_{p,q}$ a $e_{p,q}^T$ si otterrebbe uno \eng{spanning tree} di peso minore. Ma allora $T$ non era un MST, assurdo. Se invece $w(e_{p,q})\geq w(e_{p,q}^T)$, allora l'arco $e_{p,q}$ potrebbe essere sostituito con l'intero cammino $\epsilon(p,q)$. Ripetendo la procedura per ogni arco non passante per $T$ nel cammino si otterrebbe così un nuovo cammino minimax, assurdo.
+Sia $T$ un MST, e sia $\sigma(p,q)$ un cammino dal nodo $p$ al nodo $q$ in $T$. Supponiamo per assurdo che esista un cammino $\mu(p,q)$ con peso massimo inferiore. Tagliamo $T$ in due frammenti rimuovendo un arco $e$ di peso massimo in $\sigma(p,q)$. Da ipotesi, per ogni arco $e'$ in $\mu(p,q)$, vale $w(e')<w(e)$. Allora, esiste un arco attraversante in $\mu(p,q)$ che produce uno \eng{spanning tree} di peso minore. Ma allora $T$ non era un MST, assurdo. Il cammino nell'MST tra due nodi è sempre un cammino minimax.
 
-Si nota che il cammino minimax non è unico nemmeno nel caso l'MST lo sia.
+Si nota che possono esistere cammini minimax non contenuti nell'MST, anche nel caso sia unico.
 
 %% Fine dei capitoli normali, inizio dei capitoli-appendice (opzionali)
 \appendix
