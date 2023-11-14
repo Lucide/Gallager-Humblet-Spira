@@ -1,0 +1,321 @@
+%% Le lingue utilizzate, che verranno passate come opzioni al pacchetto babel. Come sempre, l'ultima indicata sarà quella primaria.
+%% Se si utilizzano una o più lingue diverse da "italian" o "english", leggere le istruzioni in fondo.
+\def\thudbabelopt{english,italian}
+%% Valori ammessi per target: bach (tesi triennale), mst (tesi magistrale), phd (tesi di dottorato).
+%% Valori ammessi  per aauheader: '' (vuoto -> nessun header Alpen Adria Univeristat), aics (Department of Artificial Intelligence and Cybersecurity), informatics (Department of Informatics Systems). Il nome del dipartimento è allineato con la versione inglese del logo UniUD.
+%% Valori ammessi per style: '' (vuoto -> stile moderno), old (stile tradizionale).
+\documentclass[target=bach,aauheader=,style=]{thud}
+
+%% --- Informazioni sulla tesi ---
+%% Per tutti i tipi di tesi
+% Scommentare quello di interesse, o mettete quello che vi pare
+\course{Informatica}
+%\course{Internet of Things, Big Data e Web}
+%\course{Matematica}
+%\course{Comunicazione Multimediale e Tecnologie dell'Informazione}
+\title{Implementazione in Erlang dell'algoritmo GHS per il calcolo dell'Albero Minimo di Copertura}
+\author{Riccardo Cavasin}
+\supervisor{Prof.\ Gabriele Puppis}
+\cosupervisor{Arch.\ Rambaldo Melandri}
+% \tutor{Guido Necchi}
+%% Campi obbligatori: \title, \author e \course.
+%% Altri campi disponibili: \reviewer, \tutor, \chair, \date (anno accademico, calcolato in automatico), \rights
+%% Con \supervisor, \cosupervisor, \reviewer e \tutor si possono indicare più nomi separati da \and.
+%% Per le sole tesi di dottorato:
+% \phdnumber{313}
+% \cycle{XXVIII}
+% \contacts{Via della Sintassi Astratta, 0/1\\65536 Gigatera --- Italia\\+39 0123 456789\\\texttt{http://www.example.com}\\\texttt{inbox@example.com}}
+
+%% --- Pacchetti consigliati ---
+%% pdfx: per generare il PDF/A per l'archiviazione. Necessario solo per la versione finale
+\usepackage[a-1b]{pdfx}
+%% hyperref: Regola le impostazioni della creazione del PDF... più tante altre cose. Ricordarsi di usare l'opzione pdfa.
+\usepackage[pdfa]{hyperref}
+%% tocbibind: Inserisce nell'indice anche la lista delle figure, la bibliografia, ecc.
+
+%% --- Stili di pagina disponibili (comando \pagestyle) ---
+%% sfbig (predefinito): Apertura delle parti e dei capitoli col numero grande; titoli delle parti e dei capitoli e intestazioni di pagina in sans serif.
+%% big: Come "sfbig", solo serif.
+%% plain: Apertura delle parti e dei capitoli tradizionali di LaTeX; intestazioni di pagina come "big".
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{textcomp}
+\usepackage{listings}
+\usepackage{xparse}
+
+\renewcommand{\restriction}{\mathord{\upharpoonright}}
+\newcommand{\eng}[1]{\foreignlanguage{english}{#1}}
+\makeatletter
+    \@ifdefinable{\selected}{\def\selected/{\eng{selected}}}
+    \@ifdefinable{\rejected}{\def\rejected/{\eng{rejected}}}
+    \@ifdefinable{\undecided}{\def\undecided/{\eng{undecided}}}
+\makeatother
+\newcommand{\sub}[1]{$_#1$}
+\NewDocumentCommand{\msg}{m o}{\textlangle\lstinline{#1}\IfNoValueF{#2}{, #2}\textrangle}
+
+\lstdefinestyle{teletype}{
+    backgroundcolor=\color{backcolour},
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2
+}
+
+\lstset{style=teletype}
+
+\begin{document}
+\maketitle
+%% Dedica (opzionale)
+% \begin{dedication}
+% 	Al mio cane,\par per avermi ascoltato mentre ripassavo le lezioni.
+% \end{dedication}
+
+%% Ringraziamenti (opzionali)
+% \acknowledgements
+% Sed vel lorem a arcu faucibus aliquet eu semper tortor. Aliquam dolor lacus, semper vitae ligula sed, blandit iaculis leo. Nam pharetra lobortis leo nec auctor. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Fusce ac risus pulvinar, congue eros non, interdum metus. Mauris tincidunt neque et aliquam imperdiet. Aenean ac tellus id nibh pellentesque pulvinar ut eu lacus. Proin tempor facilisis tortor, et hendrerit purus commodo laoreet. Quisque sed augue id ligula consectetur adipiscing. Vestibulum libero metus, lacinia ac vestibulum eu, varius non arcu. Nam et gravida velit.
+
+%% Sommario (opzionale)
+\abstract
+WIP
+
+%% Indice
+\tableofcontents
+
+%% Lista delle tabelle (se presenti)
+%\listoftables
+
+%% Lista delle figure (se presenti)
+%\listoffigures
+
+%% Corpo principale del documento
+\mainmatter
+
+\chapter{Introduzione}
+In questa tesi si presenta un'implementazione in Erlang dell'algoritmo distribuito Gallager-Humblet-Spira (GHS) per il calcolo dell'albero minimo di copertura (MST). In un grafo non orientato, connesso e pesato, un MST è un sottografo aciclico contenente tutti i nodi, tale che la somma dei pesi degli archi è minima. Gli MST sono utilizzati nella risoluzione di svariati problemi di ottimizzazione dove il costo di un percorso non dipende dalla sua lunghezza. Tra questi, abbiamo scelto il problema del percorso minimax per testare l'implementazione.
+
+Il linguaggio Erlang è orientato allo sviluppo di sistemi distribuiti adottando un modello basato su processi isolati, la cui creazione e distruzione è un'operazione a basso costo. I processi possono interagire solamente mediante scambio di messaggi, in maniera trasparente anche tra nodi Erlang su macchine diverse. I messaggi sono distribuiti attraverso canali affidabili FIFO a destinatari noti.
+
+WIP
+
+\chapter{L'algoritmo GHS}
+
+\section{Cenni sugli MST}
+Un grafo non orientato connesso e pesato $G$ è una tupla $\langle V,E,w\rangle$ dove $V$ è l'insieme dei nodi, $E$ è l'insieme degli archi e $w\colon E\to\mathbb{R}$ è una funzione che associa un peso a ogni arco. Si indica la dimensione del grafo con $|G|$, dove $|G|=|V|$. Viene anche definito il peso di $G$ come:
+$$
+W(G)=\sum_{e\in E}w(e)
+$$
+Un \eng{minimum spanning tree} è un sottografo $G'$ di $G$ tale che:
+\begin{enumerate}
+  \item $G'=\langle V,E',w\restriction_{E'}\rangle$, dove $E'\subseteq E$
+  \item $G'$ è connesso
+  \item $W(G')\leq W(G'')$ per ogni sottografo connesso $G''$
+\end{enumerate}
+In generale, l'MST non è unico.\\
+Un esempio banale è un grafo completo di tre nodi $G=\langle\{a,b,c\},\{e_1,e_2,e_3\},w\rangle$ (un triangolo), dove $w(e_1)=w(e_2)\:>w(e_3)$. Un MST sarà costituito dagli archi $\{e_1, e_3\}$, l'altro da $\{e_1, e_3\}$. Definiamo \emph{frammento} un sottografo connesso di un qualche MST.
+
+\paragraph{Unicità degli MST}\label{mst:uniqueness}
+Se esiste più di un MST, allora esistono due archi $e_1,e_2\;\in E$ con lo stesso peso.
+
+Supponiamo per assurdo che esistano due MST di $G$ diversi $H=\langle V,E_H,w\rangle$, $S=\langle V,E_S,w\rangle$, e che tutti gli archi abbiano peso distinto. Allora esiste un unico arco $e_1$ di peso minimo tale che $e_1\in E_H\land e_1\notin E_S\;$ o $\;e_1\in E_S\land e_1\notin E_H$. Senza perdita di generalità, assumiamo $e_1\in E_H$. $S$ è un albero di copertura, quindi aggiungendo l'arco $e_1$ a $S$, si crea un ciclo. A sua volta, $H$ è un albero, quindi è aciclico ed esiste un arco $e_2$ nel ciclo tale $e_2\in E_S\;\land\;e_2\notin E_H$. Per ipotesi, $w(e_1)<w(e_2)$, poiché $e_1$ è stato scelto come minimo. $e_1$ e $e_2$ fanno entrambi parte del ciclo, quindi sostituendo $e_1$ a $e_2$ in $S$ si ottiene uno \eng{spanning tree} diverso di peso minore. Ma allora $S$ non era un MST, assurdo.\\
+Come corollario, se tutti gli archi hanno peso distinto, l'MST è unico.
+
+\paragraph{Proprietà del taglio}\label{mst:cut}
+Si definisce un taglio $C=\langle S,V\setminus S\rangle$, $S\subseteq V$ un partizionamento di $V$ in due parti. Un arco $E\ni\langle u,j\rangle$, $u,j\in V$ si dice \emph{di attraversamento} se $u\in S\;\land\;j\in V\setminus S$ oppure $j\in S\;\land\;u\in V\setminus S$.\\
+Per ogni taglio $C$ nel grafo, se l'arco di attraversamento di peso minimo è unico, allora appartiene a tutti gli MST.
+
+Supponiamo per assurdo che esista un MST $H$ che non contiene l'arco di attraversamento minimo $e$. $H$ è un albero di copertura, quindi aggiungendo l'arco $e$ a $H$ si ottiene un ciclo che attraversa il taglio in $e$ e $e'$. Per ipotesi, $w(e)<w(e')$, poiché $e'$ è stato scelto come minimo. Sostituendo $e'$ a $e$ in $H$ si ottiene uno \eng{spanning tree} di peso minore ad $H$. Ma allora $H$ non era un MST, assurdo.\\
+Come corollario, nel caso generale, gli archi di attraversamento di peso minimo appartengono ciascuno a un qualche MST. Questi archi si dicono \emph{\eng{safe}}.
+
+\paragraph{}
+Si nota che il problema del \eng{minimum spanning tree} è ben definito anche in caso di cicli di peso negativo.
+Nel caso $G$ non sia connesso, esiste un MST per componente connessa. 
+
+\section{Algoritmi distribuiti}
+Un algoritmo distribuito è progettato per essere eseguito in maniera concorrente su più processi (nodi) connessi a formare una rete. Si presuppone che ogni nodo inizialmente disponga di una visione parziale dell'intera rete, ad esempio, limitata alle connessioni ai nodi adiacenti. Si modella la rete con un grafo, dove gli archi esprimono le connessioni tra i nodi. Si può scegliere una metrica delle connessioni e rappresentarla come peso degli archi. Ogni nodo comunica con i vicini attraverso scambio di messaggi, utilizzando le istruzioni \lstinline{send} e \lstinline{receive} per inviare e attendere l'arrivo di messaggi, rispettivamente. In questo caso, si assume che i canali di comunicazione siano FIFO, senza errori e con latenza imprevedibile ma finita. Si nota che \lstinline{receive} è un'operazione bloccante: finché la coda di ricezione è vuota, il processo resta in sospeso.
+
+Un algoritmo distribuito termina quando raggiunge una configurazione in cui nessun passo di computazione è applicabile. Ciò non implica che ogni processo sia terminato, potrebbero esistere processi bloccati in attesa di messaggi.
+
+Risulta quindi evidente che gli algoritmi tradizionali per il calcolo degli MST non possono essere applicati nei contesti distribuiti. Non esiste un nodo con accesso totale ed esclusivo alla struttura dati del grafo. Il risultato dev'essere determinato collaborativamente, specialmente nel caso la dimensione della rete sia troppo grande per essere memorizzata da un singolo nodo.
+
+\subsection{Misure di complessità degli algoritmi distribuiti}
+La misura tradizionale di complessità nel tempo, in termini di numero di operazioni in funzione alla dimensione dell'\eng{input}, non è applicabile agli algoritmi distribuiti. Un'istruzione \lstinline{receive} impiega tempo indefinito per terminare, finché non viene sbloccata da una \lstinline{send} di un altro processo. Questo concetto di causalità è modellato dalla relazione \eng{\emph{happen-before}}, indicata con $\prec$.
+
+\paragraph{La relazione \eng{happen-before}}
+La relazione \eng{happen-before} è un ordine parziale stretto su tutti gli eventi nella rete. Intuitivamente, definisce successioni di operazioni eseguite in maniera sequenziale \,\textendash\, in termini di causa-effetto \,\textendash\, da nodi potenzialmente diversi. La relazione non è definita tra eventi \emph{concorrenti}, ovvero quanto non è garantita una precedenza tra loro. Più formalmente,
+\begin{equation}
+\begin{split}
+a\prec b\iff &\text{l'evento $a$ è avvenuto prima dell'evento $b$ localmente nello stesso modo}\\
+&\lor\quad\text{$a$ è l'invio del messaggio $m$, $b$ è la ricezione di $m$}\\
+&\lor\quad\text{esiste l'evento $c$ tale che}\ a\prec c\land c\prec b\text{, per la propretà transitiva}
+\end{split}
+\end{equation}
+
+Ciò permette definire il costo computazionale di un algoritmo distribuito valutando la più lunga sequenza di eventi in ordine \eng{happen-before}.
+
+\paragraph{}
+Un'altra metrica di complessità distintiva degli algoritmi distribuiti è la \emph{complessità in messaggi}, ovvero il numero totale di messaggi generati nella rete durante l'intera esecuzione. Questa misura è utile nel caso la trasmissione dei messaggi sia associata a un costo non trascurabile, come spesso accade negli scenari reali.
+
+\section{L'algoritmo GHS}
+GHS\cite{10.1145/357195.357200} è un algoritmo distribuito efficiente per il calcolo del \eng{minimum spanning tree} di ogni componente connessa. L'algoritmo decide un nodo ``radice'' per ogni MST, e ogni altro nodo seleziona il vicino in direzione della radice come ``genitore''. Si ottiene una versione orientata dell'albero chiamata \emph{\eng{sink tree}}. I nodi non ottengono una rappresentazione completa dell'MST, ma possono instradare messaggi dalla radice ai figli e viceversa.
+
+\paragraph{Assunzioni}\label{mst:assumptions}
+Si assume che ogni nodo sia identificato da un \emph{id} univoco, e che gli id siano ordinabili. Per semplicità, si assume anche che i pesi siano unici. Verrà mostrata una soluzione a questa limitazione~\ref{ghs:weights}.
+
+\paragraph{}
+La procedura consiste nel selezionare l'arco \eng{safe} tra due frammenti e usarlo per fonderli \,\textendash\, tramite l'operazione \emph{\eng{merge}} \,\textendash\, in un frammento più grande, in maniera concorrente. Ogni nodo in un frammento $H$ mantiene:
+\begin{itemize}
+  \item L'id della radice del \eng{sink tree}, chiamata \emph{core}. Si usa per identificare il frammento a cui appartiene il nodo,
+  \item Il $livello$ di $H$, tale che $2^{livello}$ è un limite inferiore al numero di nodi in $H$. In seguito si vedrà che il livello è usato per controllare il comportamento dei \eng{merge},
+  \item Lo \emph{stato} del nodo corrente, con valore \emph{\eng{searching}} o \emph{\eng{found}},
+  \item Un'annotazione per ogni arco incidente con valore tra \emph{\eng{selected}}, \emph{\eng{rejected}} e \emph{\eng{selected}}. Gli archi \selected/ appartengono ad $H$, gli archi \rejected/ sono definitivamente non in $H$ e gli archi \undecided/ sono ancora da classificare.
+\end{itemize}
+All'inizio dell'algoritmo, ogni nodo è parte di un frammento costituito dal nodo stesso, e gli archi incidenti vengono annotati \undecided/. Ogni nodo si trova nello stato \emph{\eng{searching}}. Possono essere distinte tre fasi in cui si può trovare ciascun frammento $H$:
+
+\subsection{\eng{Searching}}
+In questa fase, $H$ decide l'arco \eng{safe}.\\
+Ogni nodo $p$ in $H$ nello stato \emph{\eng{searching}} manda un messaggio \msg{test}[$livello_p$, $core_p$] al vicino $q$ sull'arco \undecided/ di peso minimo $e_{pq}$ (se esiste). $q$ risponde con \msg{reject} se $core_q=core_p$, oppure con \msg{accept} se $core_q\ne core_p$ e $livello_q\geq livello_p$. Nel caso $livello_q<livello_p$, $q$ pospone l'elaborazione del messaggio finché una delle condizioni precedenti si verificano. Alla ricezione di un \lstinline{reject}, $p$ annota $e_{pq}$ come \rejected/ e ripete l'operazione sugli archi \undecided/ restanti, se esistono.
+
+Nel frattempo $p$ riceve anche messaggi \msg{report}[$peso$] da ciascuno dei figli (se esistono), dove $peso$ indica il peso dell'arco di attraversamento minimo individuato nel sottoalbero. Una volta ricevuti tutti i rapporti dei figli, e aver scelto un arco \undecided/, le informazioni sono aggregate e l'arco di peso minimo viene riferito al padre tramite il messaggio \lstinline{report}. Il nodo quindi si annota da quale arco incidente ha ottenuto questa informazione  \,\textendash\, chiameremo quest'arco \emph{sorgente} \,\textendash\, e imposta il proprio stato a \emph{\eng{found}}. In base alla situazione, $p$ potrebbe non avere figli o archi \undecided/. Nel caso non abbia entrambi, riporta un peso simbolico \msg{report}[$\infty$].
+
+Nell'insieme, questo comportamento genera un \emph{\eng{convergecast}} verso il core, che decide il peso dell'arco \eng{safe}. Quando il core ottiene $\infty$ come peso minimo, l'MST è completo. Si nota che finché ci sono messaggi \msg{test} senza risposta (posposti dai destinatari), l'intero frammento non procede alla fase successiva.
+
+\subsection{\eng{Notifying}}
+Il core risponde \msg{notify} al figlio adiacente all'arco sorgente. Allo stesso modo, i discendenti instradano il messaggio finché non raggiunge il nodo $p$ il cui arco sorgente è un arco \undecided/, ovvero l'arco \eng{safe} del frammento. Gli archi lungo il percorso nel \eng{sink tree} vengono invertiti, predisponendo l'albero affinché $p$ diventi la nuova radice ($p$ resta invariato). $p$ annota l'arco sorgente \emph{\eng{selected}} e invia \msg{merge}[$livello_p$] al nodo adiacente $q$. Nel caso $p$ sia il core stesso, non è necessario nessun \lstinline{notify}.
+
+
+\subsection{\eng{Merging}}\label{ghs:merging}
+Il modo in cui avviene il \eng{merge} tra il nodo $p$ in $H$ a un nodo $q$ nel frammento $S$ si distingue in due casi:
+\begin{itemize}
+  \item Se $livello_H<livello_S$: questo caso può essere gestito aggiornando solamente i nodi in $H$ (\emph{assorbimento}). Si ricorda che ciò non implica $|H|<|S|$. $q$ risponde a $p$ con \msg{update}[$livello_q, core_q, stato_q$], $p$ sposta il genitore nei figli e imposta come nuovo genitore $q$. $p$ è ora la radice del \eng{sink tree} di $H$, quindi ogni nodo in $H$ riceve, imposta e propaga la nuova identità del frammento. Nell’insieme, questo comportamento genera un \emph{\eng{broadcast}} dal core ai discendenti. 
+  \item Se $livello_H=livello_S$: $H$ e $S$ devono intraprendere il \eng{merge} sullo stesso arco, i.e., entrambi devono aver scelto rispettivamente $e_{pq}$, $e_{qp}$ come archi \eng{safe}. Se $q$ non ha annotato $e_{qp}$ \emph{\eng{selected}}, $q$ pospone l'elaborazione del messaggio finché una delle condizioni precedenti si verificano. Il livello del nuovo frammento aumenta di uno, poiché sarà cresciuta di almeno il doppio dall'ultimo \eng{merge}:
+  $$
+  livello_H=livello_S\;\implies\;|H\cup S\cup\{e_{pq}\}|\;\ge\;2\cdot 2^{livello}=2^{livello+1}
+  $$
+  $p$ e $q$ si rispondono a vicenda \msg{update}[$livello+1, k, searching$], dove $k$ è il nuovo core scelto tra $p$ e $q$. $k$ deve poter essere determinato deterministicamente da entrambi i nodi; sfruttiamo le assunzioni dichiarate inizialmente~\ref{mst:assumptions}, e scegliamo il nodo con id massimo. Le informazioni vengono propagate in \eng{broadcast} in maniera simile al caso precedente, con la differenza che il nodo con id minore imposterà come genitore $k$.
+  
+  Si nota che è impossibile arrivare a un \eng{deadlock} dove tutti i frammenti sono di livello uguale e hanno scelto un \eng{safe edge} diverso. Abbiamo assunto che i pesi degli archi siano unici~\ref{mst:assumptions}, quindi esiste un arco \eng{safe} di peso strettamente inferiore a tutti gli altri.
+  \item Se $livello_H>livello_S$: questo caso è impossibile poiché $S$ pospone le risposta ai \lstinline{test} di $H$ fino a che $livello_H\leq livello_S$.
+\end{itemize}
+
+\paragraph{Il ruolo del livello}\label{ghs:level}
+Il livello di un frammento svolge principalmente due funzioni correlate nell'algoritmo GHS: stabilisce una ``direzione'' di assorbimento, per evitare la formazione di cicli, e garantisce una riduzione almeno esponenziale del numero di frammenti (sotto certe assunzioni~\ref{ghs:complexity}).
+
+Quando un frammento $H$ viene assorbito da un frammento $S$, ci vuole un tempo imprevedibile affinché ogni nodo in $H$ riceva l'identità di $S$. In generale, serve un meccanismo che impedisca nel frattempo ad $S$ di assorbire un qualche nodo non ancora aggiornato di $H$. Una soluzione è di permettere una sola direzione di assorbimento, con una relazione d'ordine stretto sui frammenti. Per esempio, si potrebbe permettere l'assorbimento solo di componenti con id del core minore, tuttavia ciò non è efficiente. GHS usa il livello per definire un ordine di assorbimento (non stretto), e in aggiunta definisce un caso speciale quando due frammenti sono dello stesso livello.
+
+Come visto in precedenza~\ref{ghs:merging}, il livello di un frammento fornisce una stima conservativa del numero di nodi che ne fanno parte. Ogni \eng{merge} con un frammento dello stesso livello porta almeno al raddoppio del numero di nodi rispetto alla stima precedente. Ciò comporta che nell'intero grafo possono avvenire al massimo $\log_2(|V|)$ \eng{merge}, di conseguenza, per ogni frammento $H$ vale $livello_H\leq\log_2(|V|)$. Questa è una proprietà importante che da un carattere logaritmico all'algoritmo.
+
+\subsection{Complessità}\label{ghs:complexity}
+
+\paragraph{Complessità in messaggi}
+L'algoritmo GHS ha complessità in messaggi
+$$
+O(|V|\log |V|+|E|)
+$$
+Ogni arco può essere rifiutato al più due volte (da entrambi i nodi adiacenti), ciascuna al costo di un messaggio \lstinline{test} e un \lstinline{reject}. In totale vengono spesi al più $4|E|$ messaggi nella classificazione degli archi \rejected/. Inoltre, per ogni livello eccetto il primo e l'ultimo, un nodo riceve al più un messaggio \lstinline{update} e un \lstinline{accept}. Invia al più un messaggio \lstinline{test}, un \lstinline{report}, e un \lstinline{merge} o \lstinline{notify}. Dal momento che il livello raggiunge al massimo $\log_2(|V|)$, si ottiene $5V(\log_2(|V|)-1)$. Quando il livello è $0$, il frammento è costituito da un solo nodo, perciò non vengono inviati \lstinline{report}. Quando il livello è massimo~\ref{ghs:level}, ogni nodo invia al più un messaggio \lstinline{report}. Questi ultimi due casi combinati costano di $5|V|$ messaggi, e il totale sale a $5V\log_2(|V|)+4|E|$.
+
+\paragraph{Complessità nel tempo}\label{ghs:complexity:time}
+L'algoritmo GHS ha complessità nel tempo
+$$
+O(|V|\log|V|)
+$$
+Questo risultato è espresso in termini di ``unità tempo'' $u$: si assume che ogni messaggio impieghi al più un'unità tempo per attraversare un arco. Si dimostra per induzione sul valore del livello $l$ che sono necessarie al più $5|V|l-3|V|$ unità tempo affinché tutti i nodi raggiungano il livello $l$. Al tempo $3u$, ogni nodo avrà inviato un messaggio \lstinline{merge}; al tempo $(3+|V|)u$ ogni nodo sarà salito al livello $1$. Può verificarsi il caso peggiore quando una ``striscia'' di $|V|$ nodi è connessa da archi di peso crescente, e i \eng{merge} avvengono in senso opposto dall'ultimo nodo al primo. Abbiamo verificato l'ipotesi per il caso base $l=1$, assumiamola vera per $l$. Al livello $l$, ogni nodo invia al più $|V|-1$ messaggi \lstinline{test} e attende altrettante risposte, formando una catena \eng{happen-before} $\alpha$ di al più $(2|V|)u$. La catena \eng{happen-before} $\beta$, costituita da messaggi \lstinline{report}, \lstinline{notify}, \lstinline{merge} e \lstinline{update}, impiega complessivamente non più di $(3|V|)u$. Dato che $\alpha\prec\beta$, il costo massimo totale è la somma $2|V|+3|V|=5|V|$. Segue che:
+$$
+5|V|l-3|V|\;+5|V|\:=\:5|V|(l+1)-3|V|
+$$
+Una volta raggiunto il livello massimo~\ref{ghs:level}, si verificano catene \eng{happen-before} composte esclusivamente da messaggi \lstinline{test}, \lstinline{reject} e \lstinline{report}, con costo al più $3|V|u$. Segue che:
+$$
+5|V|\log_2(|V|)-3|V|\;+3|V|\:=\:5|V|\log_2(|V|)
+$$
+Si può dimostrare con un esempio che esistono casi dove il tempo d'esecuzione raggiunge effettivamente $\theta(|V|\log(|V|))$. In aggiunta, si può dimostrare (sempre con un esempio) che nel caso i nodi non attivino spontaneamente la fase \eng{Searching}, il costo diventa quadratico.
+
+Nel caso il grafo non sia connesso, $|V|$ è il numero di nodi nella componente connessa più grande.
+
+\subsection{Commenti}
+
+\paragraph{Pesi non unici}\label{ghs:weights}
+L'algoritmo sfrutta l'unicità dell'MST \,\textendash\, e di conseguenza l'unicità dell'arco \eng{safe} di ogni frammento~\ref{mst:uniqueness} \,\textendash\, per funzionare correttamente~\ref{ghs:merging}. È dunque necessaria una relazione d'ordine stretto tra gli archi. Sfruttando le assunzioni~\ref{mst:assumptions}, si può definire una relazione d'ordine lessicografico stretto sulla tupla $\langle w(e),\min(p,q),\max(p,q)\rangle$ associata a ogni arco $e_{pq}$. A parità di peso, gli archi vengono disambiguati in maniera arbitraria sfruttando l'unicità degli id dei nodi.
+
+\paragraph{Ottimizzazioni minori}
+Sono possibili alcune ottimizzazioni minori alla versione dell'algoritmo presentata:
+\begin{itemize}
+    \item Nella prima fase \eng{Searching}, si può evitare di testare i vicini e inviare direttamente il messaggio \lstinline{merge} sul miglior arco \undecided/. Il frammento è costituito da un solo nodo, quindi sarebbe impossibile ricevere una risposta \lstinline{reject}. Il frammento è anche di livello minimo, perciò il messaggio \lstinline{merge} è valido per qualsiasi destinatario.
+    \item Un nodo che risponde \lstinline{reject} al test di un nodo $p$ può direttamente annotare l'arco verso $q$ \rejected/. Questa modifica permette di dimezzare il costo totale in messaggi della classificazione degli archi \rejected/.
+\end{itemize}
+
+\paragraph{GHS è un algoritmo decentralizzato}
+Si definisce \emph{decentralizzato} un algoritmo distribuito con più iniziatori. Un \emph{iniziatore} è un nodo la cui prima istruzione è una \lstinline{send} o un evento locale, i.e., un nodo che compie qualche azione prima di attendere in una \lstinline{receive}. In ogni algoritmo distribuito esiste almeno un iniziatore, altrimenti non potrebbe avviarsi. La versione di GHS presentata prevede che ogni noto intraprenda autonomamente la fase \eng{Searching} inviando un messaggio \lstinline{test}. Esistono varianti dell'algoritmo dove i nodi si trovano inizialmente nello stato \emph{\eng{sleeping}}. Un singolo nodo si sveglia spontaneamente e avvia la ricerca, ogni altro nodo si sveglia alla ricezione di un messaggio \lstinline{test}. Questo approccio ha conseguenze sul costo nel tempo~\ref{ghs:complexity:time}.
+
+\subsection{GHS per leader \eng{election} e \eng{reliable broadcast}}
+L'algoritmo GHS può essere utilizzato per risolvere due problemi fondamentali della programmazione distribuita: leader \eng{election} e \eng{reliable broadcast}. Il problema del leader \eng{election} consiste nel designare un nodo come supervisore \,\textendash\, il \emph{leader} \,\textendash\, incaricato di coordinare le operazioni degli altri nodi. Nell'algoritmo GHS, il leader di ogni componente connessa è il \emph{core}, ovvero la radice del \eng{sink tree}. Il \eng{minimum spanning sink tree} rappresenta anche la struttura ideale per effettuare \eng{broadcast} efficienti: in quanto albero orientato, l'informazione può essere propagata dalla radice alle foglie senza dover gestire cicli, in quanto MST, il costo totale del \eng{broadcast} è minimizzato. Si ricorda che nel caso i pesi rappresentassero latenze, o in genere una qualsiasi proprietà dipendente dalla lunghezza dei percorsi, l'MST non garantisce la soluzione ottimale. In questo caso, la soluzione ottimale può essere diversa per ogni scelta del nodo di partenza. Questa classe di problemi è chiamata \eng{\emph{all pairs shortest path}} ed è trattata da una classe diversa di algoritmi.
+
+
+\chapter{Il linguaggio Erlang}
+
+WIP
+
+%% Fine dei capitoli normali, inizio dei capitoli-appendice (opzionali)
+\appendix
+
+%\part{Appendici}
+
+\chapter{Titolo della prima appendice}
+WIP
+
+%% Parte conclusiva del documento; tipicamente per riassunto, bibliografia e/o indice analitico.
+\backmatter
+
+%% Riassunto (opzionale)
+%\summary
+%Maecenas tempor elit sed arcu commodo, dapibus sagittis leo egestas. Praesent at ultrices urna. Integer et nibh in augue mollis facilisis sit amet eget magna. Fusce at porttitor sapien. Phasellus imperdiet, felis et molestie vulputate, mauris sapien tincidunt justo, in lacinia velit nisi nec ipsum. Duis elementum pharetra lorem, ut pellentesque nulla congue et. Sed eu venenatis tellus, pharetra cursus felis. Sed et luctus nunc. Aenean commodo, neque a aliquam bibendum, mauris augue fringilla justo, et scelerisque odio mi sit amet diam. Nulla at placerat nibh, nec rutrum urna. Donec ut egestas magna. Aliquam erat volutpat. Phasellus vestibulum justo sed purus mattis, vitae lacinia magna viverra. Nulla rutrum diam dui, vel semper mi mattis ac. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Donec id vestibulum lectus, eget tristique est.
+
+%% Bibliografia (praticamente obbligatoria)
+\bibliographystyle{plain_\languagename}%% Carica l'omonimo file .bst, dove \languagename è la lingua attiva.
+%% Nel caso in cui si usi un file .bib (consigliato)
+\bibliography{thud}
+%% Nel caso di bibliografia manuale, usare l'environment thebibliography.
+
+%% Per l'indice analitico, usare il pacchetto makeidx (o analogo).
+
+\end{document}
+
+--- Istruzioni per l'aggiunta di nuove lingue ---
+Per ogni nuova lingua utilizzata aggiungere nel preambolo il seguente spezzone:
+    \addto\captionsitalian{%
+        \def\abstractname{Sommario}%
+        \def\acknowledgementsname{Ringraziamenti}%
+        \def\authorcontactsname{Contatti dell'autore}%
+        \def\candidatename{Candidato}%
+        \def\chairname{Direttore}%
+        \def\conclusionsname{Conclusioni}%
+        \def\cosupervisorname{Co-relatore}%
+        \def\cosupervisorsname{Co-relatori}%
+        \def\cyclename{Ciclo}%
+        \def\datename{Anno accademico}%
+        \def\indexname{Indice analitico}%
+        \def\institutecontactsname{Contatti dell'Istituto}%
+        \def\introductionname{Introduzione}%
+        \def\prefacename{Prefazione}%
+        \def\reviewername{Controrelatore}%
+        \def\reviewersname{Controrelatori}%
+        %% Anno accademico
+        \def\shortdatename{A.A.}%
+        \def\summaryname{Riassunto}%
+        \def\supervisorname{Relatore}%
+        \def\supervisorsname{Relatori}%
+        \def\thesisname{Tesi di \expandafter\ifcase\csname thud@target\endcsname Laurea\or Laurea Magistrale\or Dottorato\fi}%
+        \def\tutorname{Tutor aziendale%
+        \def\tutorsname{Tutor aziendali}%
+    }
+sostituendo a "italian" (nella 1a riga) il nome della lingua e traducendo le varie voci.
