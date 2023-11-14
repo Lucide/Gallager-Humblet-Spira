@@ -16,7 +16,7 @@
 \title{Implementazione in Erlang dell'algoritmo GHS per il calcolo dell'Albero Minimo di Copertura}
 \author{Riccardo Cavasin}
 \supervisor{Prof.\ Gabriele Puppis}
-\cosupervisor{Arch.\ Rambaldo Melandri}
+\cosupervisor{WIP}
 % \tutor{Guido Necchi}
 %% Campi obbligatori: \title, \author e \course.
 %% Altri campi disponibili: \reviewer, \tutor, \chair, \date (anno accademico, calcolato in automatico), \rights
@@ -103,7 +103,7 @@ WIP
 \mainmatter
 
 \chapter{Introduzione}
-In questa tesi si presenta un'implementazione in Erlang dell'algoritmo distribuito Gallager-Humblet-Spira (GHS) per il calcolo dell'albero minimo di copertura (MST). In un grafo non orientato, connesso e pesato, un MST è un sottografo aciclico contenente tutti i nodi, tale che la somma dei pesi degli archi è minima. Gli MST sono utilizzati nella risoluzione di svariati problemi di ottimizzazione dove il costo di un percorso non dipende dalla sua lunghezza. Tra questi, abbiamo scelto il problema del percorso minimax per testare l'implementazione.
+In questa tesi si presenta un'implementazione in Erlang dell'algoritmo distribuito Gallager-Humblet-Spira (GHS) per il calcolo dell'albero minimo di copertura (MST). In un grafo non orientato, connesso e pesato, un MST è un sottografo aciclico contenente tutti i nodi, tale che la somma dei pesi degli archi è minima. Gli MST sono utilizzati nella risoluzione di svariati problemi di ottimizzazione dove il costo di un cammino non dipende dalla sua lunghezza. Tra questi, abbiamo scelto il problema del cammino minimax per testare l'implementazione.
 
 Il linguaggio Erlang è orientato allo sviluppo di sistemi distribuiti adottando un modello basato su processi isolati, la cui creazione e distruzione è un'operazione a basso costo. I processi possono interagire solamente mediante scambio di messaggi, in maniera trasparente anche tra nodi Erlang su macchine diverse. I messaggi sono distribuiti attraverso canali affidabili FIFO a destinatari noti.
 
@@ -192,7 +192,7 @@ Nel frattempo $p$ riceve anche messaggi \msg{report}[$peso$] da ciascuno dei fig
 Nell'insieme, questo comportamento genera un \emph{\eng{convergecast}} verso il core, che decide il peso dell'arco \eng{safe}. Quando il core ottiene $\infty$ come peso minimo, l'MST è completo. Si nota che finché ci sono messaggi \msg{test} senza risposta (posposti dai destinatari), l'intero frammento non procede alla fase successiva.
 
 \subsection{\eng{Notifying}}
-Il core risponde \msg{notify} al figlio adiacente all'arco sorgente. Allo stesso modo, i discendenti instradano il messaggio finché non raggiunge il nodo $p$ il cui arco sorgente è un arco \undecided/, ovvero l'arco \eng{safe} del frammento. Gli archi lungo il percorso nel \eng{sink tree} vengono invertiti, predisponendo l'albero affinché $p$ diventi la nuova radice ($p$ resta invariato). $p$ annota l'arco sorgente \emph{\eng{selected}} e invia \msg{merge}[$livello_p$] al nodo adiacente $q$. Nel caso $p$ sia il core stesso, non è necessario nessun \lstinline{notify}.
+Il core risponde \msg{notify} al figlio adiacente all'arco sorgente. Allo stesso modo, i discendenti instradano il messaggio finché non raggiunge il nodo $p$ il cui arco sorgente è un arco \undecided/, ovvero l'arco \eng{safe} del frammento. Gli archi lungo il cammino nel \eng{sink tree} vengono invertiti, predisponendo l'albero affinché $p$ diventi la nuova radice ($p$ resta invariato). $p$ annota l'arco sorgente \emph{\eng{selected}} e invia \msg{merge}[$livello_p$] al nodo adiacente $q$. Nel caso $p$ sia il core stesso, non è necessario nessun \lstinline{notify}.
 
 
 \subsection{\eng{Merging}}\label{ghs:merging}
@@ -223,6 +223,7 @@ L'algoritmo GHS ha complessità in messaggi
 $$
 O(|V|\log |V|+|E|)
 $$
+
 Ogni arco può essere rifiutato al più due volte (da entrambi i nodi adiacenti), ciascuna al costo di un messaggio \lstinline{test} e un \lstinline{reject}. In totale vengono spesi al più $4|E|$ messaggi nella classificazione degli archi \rejected/. Inoltre, per ogni livello eccetto il primo e l'ultimo, un nodo riceve al più un messaggio \lstinline{update} e un \lstinline{accept}. Invia al più un messaggio \lstinline{test}, un \lstinline{report}, e un \lstinline{merge} o \lstinline{notify}. Dal momento che il livello raggiunge al massimo $\log_2(|V|)$, si ottiene $5V(\log_2(|V|)-1)$. Quando il livello è $0$, il frammento è costituito da un solo nodo, perciò non vengono inviati \lstinline{report}. Quando il livello è massimo~\ref{ghs:level}, ogni nodo invia al più un messaggio \lstinline{report}. Questi ultimi due casi combinati costano di $5|V|$ messaggi, e il totale sale a $5V\log_2(|V|)+4|E|$.
 
 \paragraph{Complessità nel tempo}\label{ghs:complexity:time}
@@ -230,6 +231,7 @@ L'algoritmo GHS ha complessità nel tempo
 $$
 O(|V|\log|V|)
 $$
+
 Questo risultato è espresso in termini di ``unità tempo'' $u$: si assume che ogni messaggio impieghi al più un'unità tempo per attraversare un arco. Si dimostra per induzione sul valore del livello $l$ che sono necessarie al più $5|V|l-3|V|$ unità tempo affinché tutti i nodi raggiungano il livello $l$. Al tempo $3u$, ogni nodo avrà inviato un messaggio \lstinline{merge}; al tempo $(3+|V|)u$ ogni nodo sarà salito al livello $1$. Può verificarsi il caso peggiore quando una ``striscia'' di $|V|$ nodi è connessa da archi di peso crescente, e i \eng{merge} avvengono in senso opposto dall'ultimo nodo al primo. Abbiamo verificato l'ipotesi per il caso base $l=1$, assumiamola vera per $l$. Al livello $l$, ogni nodo invia al più $|V|-1$ messaggi \lstinline{test} e attende altrettante risposte, formando una catena \eng{happen-before} $\alpha$ di al più $(2|V|)u$. La catena \eng{happen-before} $\beta$, costituita da messaggi \lstinline{report}, \lstinline{notify}, \lstinline{merge} e \lstinline{update}, impiega complessivamente non più di $(3|V|)u$. Dato che $\alpha\prec\beta$, il costo massimo totale è la somma $2|V|+3|V|=5|V|$. Segue che:
 $$
 5|V|l-3|V|\;+5|V|\:=\:5|V|(l+1)-3|V|
@@ -263,7 +265,20 @@ L'algoritmo GHS può essere utilizzato per risolvere due problemi fondamentali d
 
 \chapter{Il linguaggio Erlang}
 
-WIP
+Erlang è un linguaggio funzionale orientato allo sviluppo di software distribuito. La caratteristica principale che lo distingue è il supporto nativo 
+
+\chapter{Note sull'implementazione}
+
+\section{Il problema del cammino minimax}
+
+Dato un grafo non orientato connesso e pesato $G$, il problema del cammino minimax consiste nella ricerca del un cammino tra due vertici $p$ e $q$, tale che il peso dell'arco di peso massimo è minimo. Questo problema viene chiamato anche ``\eng{bottleneck shortest path problem}'', e ha applicazioni pratiche nella pianificazione dei trasporti \cite{doi:10.1287/trsc.21.2.115}. In generale, il cammino minimax non è unico. Esiste un problema duale, chiamato ``\eng{widest path problem}'', dove si cerca il precorso con il massimo arco minimo. Anche questa variante ha applicazioni pratiche, come ad esempio ottenere il cammino con maggiore larghezza di banda in una rete. Una procedura per la risoluzione del problema minimax può essere usata per risolvere un problema \eng{widest path} negando il peso degli archi di $G$. Vale anche viceversa.
+
+\paragraph{Esiste sempre un cammino minimax nell'MST}
+Per ogni coppia di nodi $p$ e $q$, esiste sempre un cammino minimax interamente contenuto nell'MST.
+
+Supponiamo per assurdo che non esista un cammino minimax completamente contenuto nell'MST $T$; sia quindi $e_{p,q}$ un arco non passante per $T$. Allora esiste un cammino $\epsilon(p,q)$ in $T$ dove $e_{p,q}^T\in\epsilon(p,q)$ è l'arco di peso massimo. Se $w(e_{p,q})<w(e_{p,q}^T)$ allora sostituendo $e_{p,q}$ a $e_{p,q}^T$ si otterrebbe uno \eng{spanning tree} di peso minore. Ma allora $T$ non era un MST, assurdo. Se invece $w(e_{p,q})\geq w(e_{p,q}^T)$, allora l'arco $e_{p,q}$ potrebbe essere sostituito con l'intero cammino $\epsilon(p,q)$. Ripetendo la procedura per ogni arco non passante per $T$ nel cammino si otterrebbe così un nuovo cammino minimax, assurdo.
+
+Si nota che il cammino minimax non è unico nemmeno nel caso l'MST lo sia.
 
 %% Fine dei capitoli normali, inizio dei capitoli-appendice (opzionali)
 \appendix
