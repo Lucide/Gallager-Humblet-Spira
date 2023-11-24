@@ -1,5 +1,5 @@
 -module(ghs).
-
+-mode(compile).
 -include_lib("stdlib/include/assert.hrl").
 -include_lib("kernel/include/logger.hrl").
 
@@ -53,8 +53,7 @@ main(Args) ->
     logger:set_handler_config(default, level, notice),
     ?LOG_DEBUG("N: ~p", [N]),
     demo(N),
-    logger_std_h:filesync(to_file_handler),
-    0.
+    logger_std_h:filesync(to_file_handler).
 
 %%====================================================================
 %% Internal functions
