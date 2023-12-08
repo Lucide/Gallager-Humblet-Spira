@@ -1,3 +1,5 @@
+/render
+/logs
 /venv
 /.*
 .rebar3
@@ -18,4 +20,5 @@ erl_crash.dump
 .idea
 *.iml
 rebar3.crashdump
+__pycache__
 *~

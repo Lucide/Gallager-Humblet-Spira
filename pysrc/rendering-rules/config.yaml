@@ -1,0 +1,23 @@
+# This is a configuration file for the rendering
+
+
+# layout can be:
+# neato, circular, spring, specral, kamada_kawai, shell
+# sfdp, dot, fdp, circo, twopi (see networkx and graphviz layouts)
+layout: neato   
+
+# scaling factor for graphical objects
+# (the larger the scale, the larger/thicker the dots and the lines)
+objects_scale: 0.35
+
+# foreground and background colors
+foreground: BLACK
+background: WHITE
+
+# type of timestamps:
+# - physical: can only be numbers (integers or floats)
+# - logical: can be numbers, lists, dicts, or sets
+timestamps: logical
+
+# total duration of the video
+time_scale: 60

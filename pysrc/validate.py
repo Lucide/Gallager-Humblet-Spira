@@ -24,7 +24,7 @@ except:
 
 G = nx.Graph()
 for n in jsondoc["nodes"]:
-    G.add_node(n)
+    G.add_node(n[0])
 for edge in [
     {"u_of_edge": edge[0], "v_of_edge": edge[1], "weight": edge[2]}
     for edge in jsondoc["edges"]

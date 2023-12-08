@@ -1,0 +1,231 @@
+# This file contains completion rules for events.
+# Rules will be parsed and possibly applied to every
+# event, following the natural listing order. 
+# A property is set by a rule only if is was undefined
+# in the event and all rule premises were met.
+# A rules can use free variables.
+# Custom properties (e.g. state) could be used to 
+# derive built-in properties (e.g. effect).
+
+
+# persistent effects on nodes
+
+- if:
+    at: $1
+    tag: null
+  then:
+    persistent: true
+    effect: appear
+    color: BLACK
+
+- if:
+    at: $1
+    tag: normal
+  then:
+    persistent: true
+    effect: shrink
+    color: BLACK
+
+- if:
+    at: $1
+    tag: core
+  then:
+    persistent: true
+    effect: grow
+    color: BLUE_E
+    to_time_slide: true
+    
+- if:
+    level: 0
+  then:
+    dot_size: 1
+
+- if:
+    level: 1
+  then:
+    dot_size: 1.5
+
+- if:
+    level: 2
+  then:
+    dot_size: 2
+
+- if:
+    level: 3
+  then:
+    dot_size: 2.5
+
+- if:
+    level: 4
+  then:
+    dot_size: 3
+
+- if:
+    level: 5
+  then:
+    dot_size: 3.5
+
+- if:
+    level: $1
+  then:
+    dot_size: 4
+
+
+# persistent effects on links
+
+- if:
+    from: $1
+    to: $2
+    tag: null
+  then:
+    persistent: true
+    effect: appear
+    color: BLACK
+    tip: false
+    shifted: false
+    line_width: 2
+
+- if:
+    tag: accepted
+  then:
+    persistent: true
+    effect: grow
+    color: BLUE_E
+    tip: true
+    shifted: false
+    line_width: 6
+    tip_length: 0.2
+    tip_width: 0.2
+
+- if:
+    tag: rejected
+  then:
+    persistent: true
+    effect: shrink
+    color: GRAY
+    tip: false
+    shifted: false
+    line_width: 1
+
+- if:
+    tag: deleted
+  then:
+    persistent: true
+    effect: shrink
+    opacity: 0
+    tip: false
+    shifted: false
+    line_width: 0
+
+
+# transient effects on links
+
+- if:
+    tag: test
+  then:
+    persistent: false
+    effect: message
+    color: BLACK
+    tip: false
+    shifted: true
+    line_width: 4
+    skip: true
+
+- if:
+    tag: accept
+  then:
+    persistent: false
+    effect: message
+    color: GREEN_E
+    tip: false
+    shifted: true
+    line_width: 4
+
+- if:
+    tag: reject
+  then:
+    persistent: false
+    effect: message
+    color: RED_E
+    tip: false
+    shifted: true
+    line_width: 4
+
+- if:
+    tag: report
+  then:
+    persistent: false
+    effect: message
+    color: ORANGE
+    tip: false
+    shifted: true
+    line_width: 4
+
+- if:
+    tag: notify
+  then:
+    persistent: false
+    effect: message
+    color: MAROON_E
+    tip: false
+    shifted: true
+    line_width: 4
+    skip: true
+
+- if:
+    tag: merge
+  then:
+    persistent: false
+    effect: message
+    color: BLUE_E
+    tip: false
+    shifted: true
+    line_width: 4
+    shifted: true
+    skip: true
+
+- if:
+    tag: update
+  then:
+    persistent: false
+    effect: message
+    color: PURPLE_E
+    tip: false
+    shifted: true
+    line_width: 4
+
+- if:
+    tag: broadcast
+  then:
+    persistent: false
+    effect: message
+    color: PINK
+    tip: false
+    shifted: true
+    line_width: 4
+    skip: true
+
+- if:
+    tag: convergecast
+  then:
+    persistent: false
+    effect: message
+    color: GOLD
+    tip: false
+    shifted: true
+    line_width: 4
+    skip: true
+
+
+# timestamps
+
+- if:
+    time: "$1"
+  then:
+    from_time: "$1"
+    to_time: "$1"
+
+- if:
+  then:
+    from_time: -inf
+    to_time: -inf
