@@ -11,6 +11,8 @@
 -export([
     new/0,
     load/1,
+    export/1,
+    save/1,
     save/2,
     add_node/2, add_node/3,
     add_nodes/2,
@@ -70,15 +72,25 @@ load(Filename) ->
     ),
     G2.
 
+export(G) ->
+    Nodes = lists:map(fun({V, Data}) -> [V, Data] end, get_list_of_datanodes(G)),
+    Edges = lists:map(
+        fun({V1, V2, EdgeData}) ->
+            [
+                V1,
+                V2,
+                EdgeData
+            ]
+        end,
+        get_list_of_dataedges(G)
+    ),
+    #{nodes => Nodes, edges => Edges}.
+
+save(G) ->
+    jsone:encode(export(G)).
 save(G, Filename) ->
-    Nodes = get_list_of_datanodes(G),
-    Edges = get_list_of_dataedges(G),
-
-    JsonData = #{nodes => Nodes, edges => Edges},
-    JsonString = jsone:encode(JsonData),
-
     {ok, FileHandle} = file:open(Filename, [write, binary]),
-    ok = file:write(FileHandle, JsonString),
+    ok = file:write(FileHandle, save(G)),
     ok = file:close(FileHandle).
 
 add_node(V, G) ->

@@ -67,6 +67,7 @@ if __name__ == '__main__':
     arg_parser.add_argument('--media', type=str, default='__media__', help='Folder where media files will be written (default: __media__)')
     arg_parser.add_argument('--slides', type=str, default='__slides__', help='Folder where html slides will be written (default: __slides__)')
     arg_parser.add_argument('--skip-slides', action='store_true', help='skip slides generation')
+    arg_parser.add_argument('--skip-png', action='store_true', help='skip png/animated png generation')
     arg_parser.add_argument('--quality', type=str, default='low_quality', help='Quality of media (default: low_quality)')
     arg_parser.add_argument('--verbosity', type=str, default='WARNING', help='Verbosity (default: WARNING)')
     args = arg_parser.parse_args()
@@ -84,13 +85,14 @@ if __name__ == '__main__':
                         f"{args.media}/videos/{scene.renderer.file_writer.get_resolution_directory()}/RenderedEvents.mp4", \
                         args.slides)
 
-    # then create a .mov video with transparent background and export it to .png images (animation + first and last frames)
-    config.transparent = 1.0
-    scene = RenderedEvents(args.rules, args.config, args.events, args.debug)
-    scene.render() 
-    run(f"ffmpeg -i \"{args.media}/videos/{scene.renderer.file_writer.get_resolution_directory()}/RenderedEvents.mp4.mov\" -f apng -plays 0 -y " + \
-        f"\"{args.media}/videos/{scene.renderer.file_writer.get_resolution_directory()}/RenderedEvents.png\"", shell=True)
-    run(f"ffmpeg -i \"{args.media}/videos/{scene.renderer.file_writer.get_resolution_directory()}/RenderedEvents.mp4.mov\" -y -vframes 1 -f image2 " + \
-        f"\"{args.media}/videos/{scene.renderer.file_writer.get_resolution_directory()}/RenderedEvents-first-frame.png\"", shell=True)
-    run(f"ffmpeg -i \"{args.media}/videos/{scene.renderer.file_writer.get_resolution_directory()}/RenderedEvents.mp4.mov\" -y -update 1 -q:v 1 " + \
-        f"\"{args.media}/videos/{scene.renderer.file_writer.get_resolution_directory()}/RenderedEvents-last-frame.png\"", shell=True)
+    if not args.skip_png:
+        # then create a .mov video with transparent background and export it to .png images (animation + first and last frames)
+        config.transparent = 1.0
+        scene = RenderedEvents(args.rules, args.config, args.events, args.debug)
+        scene.render() 
+        run(f"ffmpeg -i \"{args.media}/videos/{scene.renderer.file_writer.get_resolution_directory()}/RenderedEvents.mp4.mov\" -f apng -plays 0 -y " + \
+            f"\"{args.media}/videos/{scene.renderer.file_writer.get_resolution_directory()}/RenderedEvents.png\"", shell=True)
+        run(f"ffmpeg -i \"{args.media}/videos/{scene.renderer.file_writer.get_resolution_directory()}/RenderedEvents.mp4.mov\" -y -vframes 1 -f image2 " + \
+            f"\"{args.media}/videos/{scene.renderer.file_writer.get_resolution_directory()}/RenderedEvents-first-frame.png\"", shell=True)
+        run(f"ffmpeg -i \"{args.media}/videos/{scene.renderer.file_writer.get_resolution_directory()}/RenderedEvents.mp4.mov\" -y -update 1 -q:v 1 " + \
+            f"\"{args.media}/videos/{scene.renderer.file_writer.get_resolution_directory()}/RenderedEvents-last-frame.png\"", shell=True)

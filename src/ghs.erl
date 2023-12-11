@@ -36,8 +36,7 @@
     candidate = none :: #candidate{} | none,
     selected = false :: boolean(),
     supervisor :: pid(),
-    representative = none :: nonempty_string() | none,
-    sum = 0 :: non_neg_integer()
+    tree = none :: map() | none
 }).
 
 %% escript entry point
@@ -93,7 +92,7 @@ start() ->
     % load graph, spawn a process for each node, and stores node-pid bijections
     Graph = datagraph:load(?GRAPH_FILENAME),
     Nodes = datagraph:get_list_of_nodes(Graph),
-    NodeToPid = lists:foldl(
+    Node_To_Pid = lists:foldl(
         fun(V, Acc) ->
             Pid = spawn(fun() -> node_start(Supervisor) end),
             maps:put(V, Pid, Acc)
@@ -101,9 +100,9 @@ start() ->
         maps:new(),
         Nodes
     ),
-    PidToNode = lists:foldl(
+    Pid_To_Node = lists:foldl(
         fun(V, Acc) ->
-            Pid = maps:get(V, NodeToPid),
+            Pid = maps:get(V, Node_To_Pid),
             maps:put(Pid, V, Acc)
         end,
         maps:new(),
@@ -114,13 +113,13 @@ start() ->
     % locations are annotated with positions and weights
     lists:foreach(
         fun({V, [X, Y]}) ->
-            save_node(maps:get(V, NodeToPid), X, Y)
+            save_node(maps:get(V, Node_To_Pid), X, Y)
         end,
         datagraph:get_list_of_datanodes(Graph)
     ),
     lists:foreach(
         fun({V1, V2, Weight}) ->
-            save_link(maps:get(V1, NodeToPid), maps:get(V2, NodeToPid), Weight)
+            save_link(maps:get(V1, Node_To_Pid), maps:get(V2, Node_To_Pid), Weight)
         end,
         datagraph:get_list_of_dataedges(Graph)
     ),
@@ -128,10 +127,10 @@ start() ->
     % inform node processes about their neighbours, which then start executing the algorithm
     lists:foreach(
         fun(V1) ->
-            Pid = maps:get(V1, NodeToPid),
+            Pid = maps:get(V1, Node_To_Pid),
             Adjs = lists:map(
                 fun({V2, Weight}) ->
-                    #edge{src = Pid, dst = maps:get(V2, NodeToPid), weight = Weight}
+                    #edge{src = Pid, dst = maps:get(V2, Node_To_Pid), weight = Weight}
                 end,
                 datagraph:get_list_of_dataadjs(V1, Graph)
             ),
@@ -140,12 +139,16 @@ start() ->
         Nodes
     ),
 
-    % supervise node processes
-    supervise(length(maps:keys(PidToNode))),
+    % collect and serialize trees
+    Trees = supervise(length(maps:keys(Pid_To_Node))),
+    JsonTrees = jsone:encode(
+        lists:map(fun(Tree) -> datagraph:export(pid_tree_to_id_tree(Tree, Pid_To_Node)) end, Trees),
+        [{float_format, [{decimals, 16}, compact]}, {indent, 2}]
+    ),
+    io:fwrite("~s~n", [JsonTrees]),
 
     latency:stop(),
     events:stop(),
-    % {ok, _} = file:position(EventsFile, {cur, -2}),
     ok = file:write(events_file, "\n]"),
     ok = file:close(EventsFile).
 
@@ -154,37 +157,20 @@ start() ->
 supervise(N) ->
     supervise(N, []).
 
-supervise(N, Components) when N > 0 ->
+supervise(N, Trees) when N > 0 ->
     receive
-        {component, C} ->
-            supervise(N, [C | Components]);
         {done} ->
-            supervise(N - 1, Components)
+            supervise(N - 1, Trees);
+        {Tree} ->
+            supervise(N, [Tree | Trees])
     end;
-supervise(0, Components) ->
-    JsonComponents =
-        "\"components\": [" ++
-            lists:foldl(
-                fun({Representative, Sum}, Acc) ->
-                    case Acc of
-                        "" -> Sep = "";
-                        _ -> Sep = ", "
-                    end,
-                    lists:flatten([
-                        Acc,
-                        io_lib:format("~s[\"~s\", ~w]", [Sep, Representative, Sum])
-                    ])
-                end,
-                "",
-                Components
-            ) ++ "]",
-    % TO BE DONE: EXPORT SPANNING TREE
-    io:fwrite("{~s}", [JsonComponents]).
+supervise(0, Trees) ->
+    Trees.
 
-root_action(Node, #state{representative = none} = State, Component) ->
+root_action(Node, #state{tree = none} = State, Component) ->
     broadcast(Node, State, Component);
 root_action(_Node, State, _Component) ->
-    State#state.supervisor ! {component, {State#state.representative, State#state.sum}}.
+    State#state.supervisor ! {State#state.tree}.
 
 node_end(Supervisor) ->
     Supervisor ! {done}.
@@ -201,7 +187,6 @@ node_start(Supervisor) ->
         #component{level = 0, core = self()}
     ).
 
-% THE CHAIN OF CALLS COULD BE SIMPLIFIED
 node_loop(Node, State, Component) ->
     % update visualization (core node, parent link, selected children, rejected edges)
     Core = Component#component.core,
@@ -214,7 +199,6 @@ node_loop(Node, State, Component) ->
         none ->
             ok;
         _ ->
-            % events:link_state(ParentLink#edge.dst, ParentLink#edge.src, deleted), % maybe remove this
             events:link_state(ParentLink#edge.src, ParentLink#edge.dst, accepted)
     end,
     lists:foreach(
@@ -296,18 +280,19 @@ node_loop(Node, State, Component) ->
         {broadcast, _} = Msg ->
             events:received_annotated_msg(Msg),
             broadcast(Node, State, Component);
-        {{convergecast, Source_Representative, Source_Sum, Minimax_Routing_Table}, _} = Msg ->
+        {{convergecast, Tree, Minimax_Routing_Table}, _} = Msg ->
             events:received_annotated_msg(Msg),
+            Routing_Table = maps:merge(
+                Node#node.minimax_routing_table, Minimax_Routing_Table
+            ),
+            New_Tree = maps:merge(State#state.tree, Tree),
             convergecast(
                 Node#node{
-                    minimax_routing_table = maps:merge(
-                        Node#node.minimax_routing_table, Minimax_Routing_Table
-                    )
+                    minimax_routing_table = Routing_Table
                 },
                 State#state{
                     replies = State#state.replies + 1,
-                    representative = max(State#state.representative, Source_Representative),
-                    sum = State#state.sum + Source_Sum
+                    tree = New_Tree
                 },
                 Component
             );
@@ -463,7 +448,10 @@ update(Node, #state{candidate = Candidate} = State, Component) ->
 broadcast(#node{children = []} = Node, State, Component) ->
     convergecast(
         Node,
-        State#state{replies = 0, representative = pid_to_list(Node#node.id)},
+        State#state{
+            replies = 0,
+            tree = datagraph:add_node(Node#node.id, datagraph:new())
+        },
         Component
     );
 broadcast(Node, State, Component) ->
@@ -474,7 +462,12 @@ broadcast(Node, State, Component) ->
         Node#node.children
     ),
     node_loop(
-        Node, State#state{replies = 0, representative = pid_to_list(Node#node.id)}, Component
+        Node,
+        State#state{
+            replies = 0,
+            tree = datagraph:add_node(Node#node.id, datagraph:new())
+        },
+        Component
     ).
 
 % compute MST weight
@@ -482,20 +475,33 @@ broadcast(Node, State, Component) ->
 convergecast(#node{parent = none} = Node, State, Component) when
     State#state.replies == ?Expected_replies(Node)
 ->
-    root_action(Node, State, Component),
+    New_State = State,
+    root_action(Node, New_State, Component),
     node_end(State#state.supervisor),
-    node_loop(Node, State, Component);
+    node_loop(Node, New_State, Component);
 convergecast(Node, State, Component) when State#state.replies == ?Expected_replies(Node) ->
+    Tree = lists:foldl(
+        fun(Child, Tree) ->
+            datagraph:add_directed_edge(Child#edge.dst, Child#edge.src, Child#edge.weight, Tree)
+        end,
+        State#state.tree,
+        Node#node.children
+    ),
+    New_State = State#state{tree = Tree},
+    Parent_Tree = datagraph:add_directed_edge(
+        Node#node.parent#edge.src,
+        Node#node.parent#edge.dst,
+        Node#node.parent#edge.weight,
+        datagraph:add_node(Node#node.parent#edge.dst, Tree)
+    ),
     Rev_Parent_Edge = reverse_edge(Node#node.parent),
-    Msg =
-        {convergecast, State#state.representative, State#state.sum + Node#node.parent#edge.weight,
-            maps:merge(
-                maps:from_keys(maps:keys(Node#node.minimax_routing_table), Rev_Parent_Edge),
-                #{Node#node.id => Rev_Parent_Edge}
-            )},
-    send_tick(Node#node.parent#edge.dst, Msg),
+    Parent_Routing_Table = maps:merge(
+        maps:from_keys(maps:keys(Node#node.minimax_routing_table), Rev_Parent_Edge),
+        #{Node#node.id => Rev_Parent_Edge}
+    ),
+    send_tick(Node#node.parent#edge.dst, {convergecast, Parent_Tree, Parent_Routing_Table}),
     node_end(State#state.supervisor),
-    node_loop(Node, State, Component);
+    node_loop(Node, New_State, Component);
 convergecast(Node, State, Component) ->
     node_loop(Node, State, Component).
 
@@ -540,6 +546,21 @@ compare_candidate(none, _) ->
 compare_candidate(#candidate{edge = A_Edge}, #candidate{edge = B_Edge}) ->
     compare_edge(A_Edge, B_Edge).
 
+pid_tree_to_id_tree(Tree, Pid_To_Node) ->
+    Id_Tree_Only_Nodes = lists:foldl(
+        fun({V, Data}, Id_Tree) -> datagraph:add_node(maps:get(V, Pid_To_Node), Data, Id_Tree) end,
+        datagraph:new(),
+        datagraph:get_list_of_datanodes(Tree)
+    ),
+    lists:foldl(
+        fun({V1, V2, EdgeData}, Id_Tree) ->
+            datagraph:add_directed_edge(
+                maps:get(V1, Pid_To_Node), maps:get(V2, Pid_To_Node), EdgeData, Id_Tree
+            )
+        end,
+        Id_Tree_Only_Nodes,
+        datagraph:get_list_of_dataedges(Tree)
+    ).
 % modification of erlang:send function
 send(To, Msg) ->
     LatencySendFun = fun(To2, Msg2) -> latency:send(To2, Msg2, ?LATENCY) end,
