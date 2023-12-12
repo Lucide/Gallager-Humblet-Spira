@@ -22,3 +22,4 @@ erl_crash.dump
 rebar3.crashdump
 __pycache__
 *~
+!.gitignore

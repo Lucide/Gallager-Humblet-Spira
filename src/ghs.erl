@@ -142,8 +142,11 @@ start() ->
     % collect and serialize trees
     Trees = supervise(length(maps:keys(Pid_To_Node))),
     JsonTrees = jsone:encode(
-        lists:map(fun(Tree) -> datagraph:export(pid_tree_to_id_tree(Tree, Pid_To_Node)) end, Trees),
-        [{float_format, [{decimals, 16}, compact]}, {indent, 2}]
+        lists:map(
+            fun(Tree) -> datagraph:export(pid_tree_to_output_tree(Tree, Pid_To_Node, Graph)) end,
+            Trees
+        ),
+        [{float_format, [{decimals, 32}, compact]}, {indent, 2}]
     ),
     io:fwrite("~s~n", [JsonTrees]),
 
@@ -546,11 +549,15 @@ compare_candidate(none, _) ->
 compare_candidate(#candidate{edge = A_Edge}, #candidate{edge = B_Edge}) ->
     compare_edge(A_Edge, B_Edge).
 
-pid_tree_to_id_tree(Tree, Pid_To_Node) ->
-    Id_Tree_Only_Nodes = lists:foldl(
-        fun({V, Data}, Id_Tree) -> datagraph:add_node(maps:get(V, Pid_To_Node), Data, Id_Tree) end,
+pid_tree_to_output_tree(Tree, Pid_To_Node, Graph) ->
+    Temp_Id_Tree = lists:foldl(
+        fun(Pid, Id_Tree) ->
+            Id = maps:get(Pid, Pid_To_Node),
+            Data = datagraph:get_node_data(Id, Graph),
+            datagraph:add_node(Id, Data, Id_Tree)
+        end,
         datagraph:new(),
-        datagraph:get_list_of_datanodes(Tree)
+        datagraph:get_list_of_nodes(Tree)
     ),
     lists:foldl(
         fun({V1, V2, EdgeData}, Id_Tree) ->
@@ -558,7 +565,7 @@ pid_tree_to_id_tree(Tree, Pid_To_Node) ->
                 maps:get(V1, Pid_To_Node), maps:get(V2, Pid_To_Node), EdgeData, Id_Tree
             )
         end,
-        Id_Tree_Only_Nodes,
+        Temp_Id_Tree,
         datagraph:get_list_of_dataedges(Tree)
     ).
 % modification of erlang:send function
