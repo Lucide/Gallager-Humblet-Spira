@@ -10,8 +10,8 @@ An escript that tests an implementation of the GHS distributed algorithm.
 
 ## Run
 
-* `_build/default/bin/ghs [-verbose]`
-  * `-verbose` log messages to `logs/log.txt`
-* `_build/default/bin/ghs | python utils/validate.py`
-  * *requires*: python
-  * Validate the output of a ramdom graph with 50 nodes. Script returns `0` if the solution is correct.
+*requires*: python
+
+* `python ./pysrc/geometric_graph.py -n 50` or `python ./pysrc/planar_graph.py -n 20`
+* `_build/default/bin/ghs | python pysrc/validate.py ./json/graph.json`
+  * Validate the output with NetworkX. Script returns `0` if the solution is correct.
