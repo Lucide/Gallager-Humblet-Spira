@@ -2,6 +2,8 @@
 
 An escript that tests an implementation of the GHS distributed algorithm.
 
+https://github.com/user-attachments/assets/ef102a30-0fca-4df0-826b-adac689fce49
+
 ## Build
 
 *requires*: erlang, rebar3
